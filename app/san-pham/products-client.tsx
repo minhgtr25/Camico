@@ -24,33 +24,15 @@ export default function ProductsClient({ content }: ProductsClientProps) {
   const availableWeights = Array.from(new Set(content.productList.map(p => p.weight))).sort()
 
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <section
-        className="relative h-[400px] flex items-center justify-center"
-        style={{
-          backgroundImage: content.hero.backgroundImage 
-            ? `url(${content.hero.backgroundImage})` 
-            : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      >
-        <div className="absolute inset-0 bg-black/40" />
-        <div className="relative z-10 text-center text-white px-4">
-          <h1 className="text-5xl md:text-6xl font-bold mb-4">{content.hero.title}</h1>
-          <p className="text-xl md:text-2xl max-w-3xl mx-auto">{content.hero.subtitle}</p>
-        </div>
-      </section>
-
+    <main className="flex-1">
       {/* Main Content */}
       <div className="container mx-auto px-4 py-12">
         <div className="grid lg:grid-cols-4 gap-8">
           {/* Sidebar Filters */}
           <aside className="lg:col-span-1 space-y-6">
             {/* Category Filter */}
-            <div className="bg-white rounded-xl p-6 shadow-lg border">
-              <h3 className="text-xl font-bold mb-4 text-gray-800">Danh mục sản phẩm</h3>
+            <div className="bg-white rounded-xl p-6 shadow-md border-2 border-[#2d5016]/10">
+              <h3 className="text-xl font-bold mb-4 text-[#2d5016]">Danh mục sản phẩm</h3>
               <div className="space-y-3">
                 {content.categories.map((category) => (
                   <div key={category.id} className="flex items-center space-x-2">
@@ -63,7 +45,7 @@ export default function ProductsClient({ content }: ProductsClientProps) {
                     />
                     <label
                       htmlFor={`category-${category.id}`}
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer flex items-center gap-2"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer flex items-center gap-2 text-gray-700"
                     >
                       <span>{category.icon}</span>
                       <span>{category.name}</span>
@@ -74,8 +56,8 @@ export default function ProductsClient({ content }: ProductsClientProps) {
             </div>
 
             {/* Weight Filter */}
-            <div className="bg-white rounded-xl p-6 shadow-lg border">
-              <h3 className="text-xl font-bold mb-4 text-gray-800">Khối lượng</h3>
+            <div className="bg-white rounded-xl p-6 shadow-md border-2 border-[#2d5016]/10">
+              <h3 className="text-xl font-bold mb-4 text-[#2d5016]">Khối lượng</h3>
               <div className="space-y-3">
                 {availableWeights.map((weight) => (
                   <div key={weight} className="flex items-center space-x-2">
@@ -88,7 +70,7 @@ export default function ProductsClient({ content }: ProductsClientProps) {
                     />
                     <label
                       htmlFor={`weight-${weight}`}
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer text-gray-700"
                     >
                       {weight}
                     </label>
@@ -104,7 +86,7 @@ export default function ProductsClient({ content }: ProductsClientProps) {
                   setActiveCategory(null)
                   setActiveWeight(null)
                 }}
-                className="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg transition-colors"
+                className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:shadow-lg text-white py-3 px-4 rounded-lg transition-all duration-300 font-semibold"
               >
                 Xóa bộ lọc
               </button>
@@ -114,7 +96,7 @@ export default function ProductsClient({ content }: ProductsClientProps) {
           {/* Products Grid */}
           <div className="lg:col-span-3">
             {filteredProducts.length === 0 ? (
-              <div className="text-center py-12">
+              <div className="text-center py-12 bg-white rounded-xl shadow-md">
                 <p className="text-gray-500 text-lg">Không tìm thấy sản phẩm nào</p>
               </div>
             ) : (
@@ -125,26 +107,26 @@ export default function ProductsClient({ content }: ProductsClientProps) {
                     <Link
                       key={product.id}
                       href={`/san-pham/${product.id}`}
-                      className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group border hover:border-primary"
+                      className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border-2 border-[#2d5016]/10 hover:border-[#2d5016]/30 hover:-translate-y-1"
                     >
-                      <div className="p-6">
+                      <div className="p-6 bg-gradient-to-br from-white to-[#f5f5dc]/20">
                         <div className="flex items-center justify-between mb-4">
-                          <span className="text-5xl">{product.icon}</span>
+                          <span className="text-5xl group-hover:scale-110 transition-transform duration-300">{product.icon}</span>
                           {category && (
-                            <span className="text-xs bg-primary/10 text-primary px-3 py-1 rounded-full font-semibold">
+                            <span className="text-xs bg-gradient-to-r from-[#2d5016] to-[#3d6826] text-white px-3 py-1 rounded-full font-semibold shadow-md">
                               {category.name}
                             </span>
                           )}
                         </div>
-                        <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-primary transition-colors">
+                        <h3 className="text-xl font-bold text-[#2d5016] mb-2 group-hover:text-[#3d6826] transition-colors">
                           {product.name}
                         </h3>
                         <p className="text-sm text-gray-600 mb-4 line-clamp-3">
                           {product.description}
                         </p>
                         <div className="flex items-center justify-between">
-                          <span className="text-lg font-bold text-primary">{product.weight}</span>
-                          <span className="text-primary group-hover:translate-x-1 transition-transform">→</span>
+                          <span className="text-lg font-bold text-[#2d5016]">{product.weight}</span>
+                          <span className="text-[#2d5016] group-hover:translate-x-1 transition-transform text-xl">→</span>
                         </div>
                       </div>
                     </Link>
@@ -155,6 +137,6 @@ export default function ProductsClient({ content }: ProductsClientProps) {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   )
 }
