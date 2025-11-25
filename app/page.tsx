@@ -53,7 +53,7 @@ export default async function Page() {
       <ImageGallery content={content.pages.home.gallery} />
       <FeedbackSection content={content.pages.home.testimonials} />
       <PartnersSection content={content.partners} />
-      <NewsSection content={content.pages.home.newsHighlights} />
+      <NewsSection content={content.news} />
       <ContactSection content={content.pages.home.contactForm} />
       <Footer />
       <BackToTop />

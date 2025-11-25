@@ -4,6 +4,10 @@ import { defaultAdminContent } from '@/lib/admin-content'
 
 const KV_KEY = 'admin-content'
 
+// Disable caching for this route
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 // GET: Lấy nội dung admin
 export async function GET() {
   try {
@@ -12,10 +16,20 @@ export async function GET() {
     if (!content) {
       // Nếu chưa có data, trả về default content
       console.log('Admin content not found in KV, returning default')
-      return NextResponse.json(defaultAdminContent)
+      return NextResponse.json(defaultAdminContent, {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+          'Pragma': 'no-cache',
+        },
+      })
     }
     
-    return NextResponse.json(content)
+    return NextResponse.json(content, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+        'Pragma': 'no-cache',
+      },
+    })
   } catch (error) {
     console.error('Error reading admin content:', error)
     return NextResponse.json(
