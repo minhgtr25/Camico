@@ -1,0 +1,59 @@
+import { Header } from "@/components/header"
+import { HeroSection } from "@/components/hero-section"
+import { AboutSection } from "@/components/about-section"
+import { ImageGallery } from "@/components/image-gallery"
+import { FeedbackSection } from "@/components/feedback-section"
+import { PartnersSection } from "@/components/partners-section"
+import { NewsSection } from "@/components/news-section"
+import { ContactSection } from "@/components/contact-section"
+import { Footer } from "@/components/footer"
+import { BackToTop } from "@/components/back-to-top"
+import { defaultAdminContent } from "@/lib/admin-content"
+
+async function getAdminContent() {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+    const res = await fetch(`${baseUrl}/api/admin/content`, {
+      cache: 'no-store', // Luôn lấy data mới nhất
+    })
+    
+    if (!res.ok) {
+      return defaultAdminContent
+    }
+    
+    return await res.json()
+  } catch (error) {
+    console.error('Error fetching admin content:', error)
+    return defaultAdminContent
+  }
+}
+
+export default async function Page() {
+  const content = await getAdminContent()
+  
+  return (
+    <main className="min-h-screen">
+      <Header />
+      <HeroSection content={{
+        backgroundImage: content.pages.home.hero.image,
+        title: content.pages.home.hero.title,
+        subtitle: content.pages.home.hero.subtitle.replace('\n', '<br />'),
+        buttonText: content.pages.home.hero.buttonText
+      }} />
+      <AboutSection content={{
+        icon: content.pages.home.about.emoji,
+        title: content.pages.home.about.title,
+        description: content.pages.home.about.content.map(p => `<p>${p}</p>`).join(''),
+        image: content.pages.home.about.logoImage,
+        quote: content.pages.home.about.quoteText
+      }} />
+      <ImageGallery content={content.pages.home.gallery} />
+      <FeedbackSection content={content.pages.home.testimonials} />
+      <PartnersSection content={content.partners} />
+      <NewsSection content={content.pages.home.newsHighlights} />
+      <ContactSection content={content.pages.home.contactForm} />
+      <Footer />
+      <BackToTop />
+    </main>
+  )
+}
