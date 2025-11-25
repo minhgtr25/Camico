@@ -244,83 +244,130 @@ export default function AdminPanel() {
       )}
       
       {/* Header */}
-      <header className="bg-gradient-to-r from-[#2d5016] to-[#3d6826] text-white sticky top-0 z-40 shadow-xl border-b-4 border-[#4a7a2e]">
-        <div className="px-4 py-4 md:py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
+        <div className="px-4 py-3 md:py-4 flex items-center justify-between gap-4">
+          {/* Left Section - Logo & Title */}
+          <div className="flex items-center gap-3 flex-1 min-w-0">
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="lg:hidden w-10 h-10 bg-white/10 backdrop-blur-sm rounded-lg flex items-center justify-center hover:bg-white/20 transition-colors"
+              className="lg:hidden w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition-colors"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
-            <div className="w-10 h-10 bg-white/10 backdrop-blur-sm rounded-lg flex items-center justify-center">
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-              </svg>
-            </div>
-            <div>
-              <h1 className="text-xl md:text-2xl font-bold">Admin Panel</h1>
-              <p className="text-xs text-white/70 hidden sm:block">CAMICO Content Management</p>
+            
+            {/* Logo & Brand */}
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-10 h-10 bg-gradient-to-br from-[#2d5016] to-[#3d6826] rounded-xl flex items-center justify-center shadow-md flex-shrink-0">
+                <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                </svg>
+              </div>
+              <div className="min-w-0">
+                <h1 className="text-lg md:text-xl font-bold text-gray-900 truncate">CAMICO Admin</h1>
+                <p className="text-xs text-gray-500 hidden sm:block">Content Management System</p>
+              </div>
             </div>
           </div>
-          <div className="flex gap-2 w-full sm:w-auto">
+
+          {/* Right Section - Action Buttons */}
+          <div className="flex items-center gap-2">
+            {/* Save Button */}
             <Button
               onClick={handleSave}
               disabled={isSaving || isLoading}
-              className={`${unsavedChanges ? 'bg-yellow-500 hover:bg-yellow-600 animate-pulse' : 'bg-green-500 hover:bg-green-600'} text-white font-bold flex-1 sm:flex-none transition-all disabled:opacity-50`}
+              className={`${
+                unsavedChanges 
+                  ? 'bg-[#2d5016] hover:bg-[#3d6826] shadow-md' 
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              } font-semibold px-4 py-2 transition-all disabled:opacity-50 border-0`}
             >
-              <span className="hidden sm:inline">
-                {isSaving ? '⏳ Đang lưu...' : unsavedChanges ? '💾 Lưu Thay Đổi' : '✓ Đã Lưu'}
-              </span>
-              <span className="sm:hidden">
-                {isSaving ? '⏳' : unsavedChanges ? '💾' : '✓'}
-              </span>
+              {isSaving ? (
+                <>
+                  <span className="animate-spin mr-2">⏳</span>
+                  <span className="hidden sm:inline">Đang lưu...</span>
+                </>
+              ) : unsavedChanges ? (
+                <>
+                  <span className="mr-2">💾</span>
+                  <span className="hidden sm:inline">Lưu thay đổi</span>
+                </>
+              ) : (
+                <>
+                  <span className="mr-2">✓</span>
+                  <span className="hidden sm:inline">Đã lưu</span>
+                </>
+              )}
             </Button>
+
+            {/* Reset Button - Desktop only */}
             <Button
               onClick={handleReset}
               disabled={isSaving || isLoading}
-              className="bg-orange-500 hover:bg-orange-600 text-white font-bold hidden md:block disabled:opacity-50"
+              className="hidden md:flex bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold px-4 py-2 disabled:opacity-50 border-0"
             >
-              {isSaving ? '⏳' : '🔄'} Reset
+              <span className="mr-2">🔄</span>
+              Reset
             </Button>
+
+            {/* Logout Button */}
             <Button
               onClick={() => setIsAuthenticated(false)}
-              className="bg-red-500 hover:bg-red-600 text-white font-bold"
+              className="bg-red-50 hover:bg-red-100 text-red-600 font-semibold px-3 md:px-4 py-2 border-0"
             >
-              <span className="hidden sm:inline">Đăng Xuất</span>
-              <span className="sm:hidden">✕</span>
+              <span className="hidden sm:inline mr-2">Đăng xuất</span>
+              <span>✕</span>
             </Button>
           </div>
         </div>
+
+        {/* Save Status Bar */}
+        {unsavedChanges && (
+          <div className="bg-yellow-50 border-t border-yellow-200 px-4 py-2">
+            <p className="text-sm text-yellow-800 text-center">
+              ⚠️ Bạn có thay đổi chưa lưu. Nhấn <strong>Lưu thay đổi</strong> để cập nhật.
+            </p>
+          </div>
+        )}
       </header>
 
       <div className="flex h-[calc(100vh-88px)]">
         {/* Sidebar Navigation */}
-        <aside className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:sticky top-[88px] left-0 h-full w-72 bg-white border-r border-gray-200 shadow-xl transition-transform duration-300 z-30 flex flex-col`}>
+        <aside className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:sticky top-[88px] left-0 h-full w-72 bg-gradient-to-b from-gray-50 to-white border-r border-gray-200 shadow-lg transition-transform duration-300 z-30 flex flex-col`}>
           {/* Search */}
-          <div className="p-4 border-b border-gray-200">
+          <div className="p-4 border-b border-gray-200 bg-white">
             <div className="relative">
-              <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               <Input
                 type="text"
-                placeholder="Tìm kiếm..."
+                placeholder="Tìm kiếm trang..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-2 w-full border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2d5016] focus:border-transparent"
+                className="pl-9 pr-4 py-2 w-full border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2d5016] focus:border-transparent text-sm"
               />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
             </div>
           </div>
 
           {/* Navigation Groups */}
-          <nav className="flex-1 overflow-y-auto p-4 space-y-6">
+          <nav className="flex-1 overflow-y-auto p-3 space-y-4 custom-scrollbar">
             {filteredGroups.map((group) => (
               <div key={group.title}>
-                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-3">
-                  {group.title}
+                <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2 px-3 flex items-center gap-2">
+                  <span>{group.title.split(' ')[0]}</span>
+                  <span className="text-gray-400">{group.title.split(' ').slice(1).join(' ')}</span>
                 </h3>
                 <div className="space-y-1">
                   {group.items.map((item) => (
@@ -330,18 +377,25 @@ export default function AdminPanel() {
                         setActiveTab(item.id)
                         if (window.innerWidth < 1024) setSidebarOpen(false)
                       }}
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition-all ${
+                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all group ${
                         activeTab === item.id
-                          ? 'bg-gradient-to-r from-[#2d5016] to-[#3d6826] text-white shadow-lg'
-                          : 'text-gray-700 hover:bg-gray-100'
+                          ? 'bg-gradient-to-r from-[#2d5016] to-[#3d6826] text-white shadow-md scale-[1.02]'
+                          : 'text-gray-700 hover:bg-gray-100 hover:scale-[1.01]'
                       }`}
                     >
-                      <span className="text-xl">{item.icon}</span>
-                      <span className="flex-1 text-left">{item.label}</span>
+                      <span className={`text-lg transition-transform ${activeTab === item.id ? 'scale-110' : 'group-hover:scale-110'}`}>
+                        {item.icon}
+                      </span>
+                      <span className="flex-1 text-left text-sm">{item.label}</span>
                       {item.badge && (
-                        <span className="px-2 py-0.5 text-xs font-bold bg-blue-500 text-white rounded-full">
+                        <span className="px-2 py-0.5 text-[10px] font-bold bg-blue-500 text-white rounded-full animate-pulse">
                           {item.badge}
                         </span>
+                      )}
+                      {activeTab === item.id && (
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                        </svg>
                       )}
                     </button>
                   ))}
@@ -351,10 +405,13 @@ export default function AdminPanel() {
           </nav>
 
           {/* Sidebar Footer */}
-          <div className="p-4 border-t border-gray-200 bg-gray-50">
-            <div className="text-xs text-gray-500 text-center">
-              <p className="font-semibold">CAMICO Admin v1.0</p>
-              <p className="mt-1">© 2024 All rights reserved</p>
+          <div className="p-4 border-t border-gray-200 bg-gradient-to-br from-gray-50 to-gray-100">
+            <div className="text-xs text-gray-600 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="font-semibold text-[#2d5016]">CAMICO Admin</span>
+                <span className="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-[10px] font-bold">v1.0</span>
+              </div>
+              <p className="text-[10px] text-gray-500">© 2024 All rights reserved</p>
             </div>
           </div>
         </aside>
