@@ -14,7 +14,7 @@ type TabType = 'hero' | 'contact' | 'products' | 'news' | 'faqs' | 'pages' | 'ab
 
 export default function AdminPanel() {
   const [adminContent, setAdminContent] = useState<AdminContent>(defaultAdminContent)
-  const [activeTab, setActiveTab] = useState<TabType>('hero')
+  const [activeTab, setActiveTab] = useState<TabType>('guide')
   const [password, setPassword] = useState('')
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [unsavedChanges, setUnsavedChanges] = useState(false)
@@ -2689,6 +2689,8 @@ function AboutPartnersEditor({
   content: AdminContent
   setContent: (content: AdminContent) => void
 }) {
+  const [logoForm, setLogoForm] = useState({ name: '', logo: '' })
+  const partners = content.partners || []
   const aboutPartners = content.pages?.aboutPartners || {
     hero: { title: '', subtitle: '', backgroundImage: '' },
     intro: { title: '', description: '' },
@@ -2725,6 +2727,38 @@ function AboutPartnersEditor({
     updateField('benefits', newBenefits)
   }
 
+  // Partner Logo Management
+  const addPartnerLogo = () => {
+    if (!logoForm.name || !logoForm.logo) {
+      alert('Vui lòng nhập tên và logo đối tác')
+      return
+    }
+    const newPartner = {
+      id: Math.max(...partners.map(p => p.id), 0) + 1,
+      name: logoForm.name,
+      logo: logoForm.logo,
+    }
+    setContent({
+      ...content,
+      partners: [...partners, newPartner],
+    })
+    setLogoForm({ name: '', logo: '' })
+  }
+
+  const removePartnerLogo = (id: number) => {
+    setContent({
+      ...content,
+      partners: partners.filter(p => p.id !== id),
+    })
+  }
+
+  const updatePartnerLogo = (id: number, field: string, value: string) => {
+    setContent({
+      ...content,
+      partners: partners.map(p => p.id === id ? { ...p, [field]: value } : p),
+    })
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4 pb-4 border-b-2 border-gray-200">
@@ -2733,7 +2767,65 @@ function AboutPartnersEditor({
         </div>
         <div>
           <h2 className="text-2xl font-bold text-gray-800">Trang Đối Tác</h2>
-          <p className="text-sm text-gray-500">Chỉnh sửa thông tin đối tác chiến lược</p>
+          <p className="text-sm text-gray-500">Chỉnh sửa thông tin đối tác chiến lược và logo</p>
+        </div>
+      </div>
+
+      {/* Partner Logos Section */}
+      <div className="space-y-4 bg-gradient-to-br from-gray-50 to-purple-50 p-6 rounded-xl border">
+        <h3 className="font-semibold text-gray-800">🏢 Logo Đối Tác (Carousel)</h3>
+        <p className="text-sm text-gray-600">Logo này sẽ xuất hiện trong carousel ở trang chủ và trang đối tác</p>
+        
+        {/* Add Partner Form */}
+        <div className="bg-white p-4 rounded-lg border-2 space-y-3">
+          <h4 className="font-semibold text-sm text-gray-700">➕ Thêm logo đối tác mới</h4>
+          <Input 
+            value={logoForm.name} 
+            onChange={(e) => setLogoForm({ ...logoForm, name: e.target.value })} 
+            placeholder="Tên đối tác (VD: Công ty ABC)" 
+            className="border-2"
+          />
+          <ImageUploader 
+            currentImage={logoForm.logo} 
+            onImageChange={(url) => setLogoForm({ ...logoForm, logo: url })} 
+            label="Logo đối tác" 
+          />
+          <Button onClick={addPartnerLogo} className="w-full bg-purple-600 hover:bg-purple-700">
+            ➕ Thêm logo
+          </Button>
+        </div>
+
+        {/* Partner List */}
+        <div className="space-y-3">
+          {partners.length === 0 ? (
+            <p className="text-sm text-gray-500 text-center py-4">Chưa có logo đối tác nào</p>
+          ) : (
+            partners.map((partner) => (
+              <div key={partner.id} className="bg-white p-4 rounded-lg border-2 space-y-3">
+                <div className="flex justify-between items-center">
+                  <h4 className="font-semibold text-gray-700">{partner.name || `Đối tác #${partner.id}`}</h4>
+                  <Button onClick={() => removePartnerLogo(partner.id)} size="sm" variant="destructive">
+                    🗑️ Xóa
+                  </Button>
+                </div>
+                <Input 
+                  value={partner.name} 
+                  onChange={(e) => updatePartnerLogo(partner.id, 'name', e.target.value)} 
+                  placeholder="Tên đối tác" 
+                />
+                <ImageUploader 
+                  currentImage={partner.logo} 
+                  onImageChange={(url) => updatePartnerLogo(partner.id, 'logo', url)} 
+                  label="Logo" 
+                />
+                {partner.logo && (
+                  <div className="bg-gray-100 p-2 rounded">
+                    <img src={partner.logo} alt={partner.name} className="h-20 object-contain mx-auto" />
+                  </div>
+                )}
+              </div>
+            ))
+          )}
         </div>
       </div>
 
@@ -3060,7 +3152,7 @@ function GuideEditor() {
         </div>
         <div>
           <h2 className="text-2xl font-bold text-gray-800">Hướng Dẫn Sử Dụng Admin Panel</h2>
-          <p className="text-sm text-gray-500">Quản lý toàn bộ nội dung website CAMICO</p>
+          <p className="text-sm text-gray-500">Quản lý nội dung website CAMICO dễ dàng</p>
         </div>
       </div>
 
@@ -3072,8 +3164,7 @@ function GuideEditor() {
         <div className="space-y-3 text-gray-700">
           <p className="leading-relaxed">
             Chào mừng đến với Admin Panel của CAMICO! Bạn có thể quản lý toàn bộ nội dung website 
-            mà không cần kiến thức lập trình. Mọi thay đổi sẽ được lưu trên <strong>Vercel KV</strong> 
-            và hiển thị ngay lập tức trên website.
+            mà không cần kiến thức lập trình. Mọi thay đổi sẽ được lưu và hiển thị ngay lập tức.
           </p>
           <div className="bg-white p-4 rounded-lg border border-blue-200 mt-3">
             <h4 className="font-semibold text-gray-800 mb-2">3 Bước Đơn Giản:</h4>
@@ -3089,178 +3180,74 @@ function GuideEditor() {
       {/* Navigation Guide */}
       <div className="bg-white p-6 rounded-xl border-2 border-gray-200 shadow-sm">
         <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-          <span>🧭</span> Điều Hướng & Tìm Kiếm
+          <span>🧭</span> Menu & Tìm Kiếm
         </h3>
-        <div className="space-y-4">
-          <div className="flex gap-3">
-            <div className="flex-shrink-0 w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-              <span className="text-xl">📱</span>
-            </div>
-            <div>
-              <h4 className="font-semibold text-gray-800">Menu Sidebar</h4>
-              <p className="text-sm text-gray-600 leading-relaxed">
-                Tất cả các trang được tổ chức thành 4 nhóm: <strong>Bắt đầu</strong> (hướng dẫn), 
-                <strong>Trang chủ</strong> (hero, giới thiệu, sản phẩm...), <strong>Trang riêng</strong> 
-                (Liên hệ, Sản phẩm), và <strong>Về chúng tôi</strong> (Đối tác, Sứ mệnh, Thông điệp).
-              </p>
-            </div>
-          </div>
-
-          <div className="flex gap-3">
-            <div className="flex-shrink-0 w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-              <span className="text-xl">🔍</span>
-            </div>
-            <div>
-              <h4 className="font-semibold text-gray-800">Tìm Kiếm Nhanh</h4>
-              <p className="text-sm text-gray-600 leading-relaxed">
-                Gõ từ khóa vào ô tìm kiếm ở đầu sidebar để lọc nhanh trang cần edit. 
-                Ví dụ: gõ "sản phẩm" sẽ hiện cả "Sản phẩm (Home)" và "Trang Sản Phẩm".
-              </p>
-            </div>
-          </div>
-
-          <div className="flex gap-3">
-            <div className="flex-shrink-0 w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-              <span className="text-xl">☰</span>
-            </div>
-            <div>
-              <h4 className="font-semibold text-gray-800">Mobile Menu</h4>
-              <p className="text-sm text-gray-600 leading-relaxed">
-                Trên mobile/tablet, nhấn nút <strong>☰</strong> ở góc trên trái để mở/đóng sidebar. 
-                Sidebar sẽ tự động đóng sau khi bạn chọn một trang.
-              </p>
-            </div>
-          </div>
+        <div className="space-y-3 text-sm text-gray-600">
+          <p><strong>Menu sidebar:</strong> Các trang được chia thành 4 nhóm - Bắt đầu, Trang chủ, Trang riêng, và Về chúng tôi.</p>
+          <p><strong>Tìm kiếm:</strong> Gõ từ khóa vào ô tìm kiếm để lọc nhanh trang cần chỉnh sửa.</p>
+          <p><strong>Mobile:</strong> Nhấn nút ☰ ở góc trên để mở/đóng menu.</p>
         </div>
       </div>
 
       {/* Page Categories */}
       <div className="grid md:grid-cols-2 gap-4">
-        {/* Home Pages */}
-        <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-5 rounded-xl border border-orange-200 shadow-sm">
+        <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-5 rounded-xl border border-orange-200">
           <h3 className="text-base font-semibold text-gray-800 mb-3 flex items-center gap-2">
             <span>🏠</span> Trang Chủ
           </h3>
-          <div className="space-y-2 text-sm text-gray-700">
-            <div className="flex items-start gap-2">
-              <span>🎯</span>
-              <div><strong>Hero:</strong> Banner chính với tiêu đề, phụ đề, nút CTA</div>
-            </div>
-            <div className="flex items-start gap-2">
-              <span>ℹ️</span>
-              <div><strong>Giới thiệu:</strong> Thông tin về công ty</div>
-            </div>
-            <div className="flex items-start gap-2">
-              <span>📦</span>
-              <div><strong>Sản phẩm:</strong> Danh sách sản phẩm nổi bật trên trang chủ</div>
-            </div>
-            <div className="flex items-start gap-2">
-              <span>📰</span>
-              <div><strong>Tin tức:</strong> Quản lý bài viết, featured article</div>
-            </div>
-            <div className="flex items-start gap-2">
-              <span>⭐</span>
-              <div><strong>Đánh giá:</strong> Testimonials từ khách hàng</div>
-            </div>
-            <div className="flex items-start gap-2">
-              <span>🖼️</span>
-              <div><strong>Thư viện:</strong> Gallery slider ảnh</div>
-            </div>
-            <div className="flex items-start gap-2">
-              <span>📞</span>
-              <div><strong>Liên hệ:</strong> Thông tin liên hệ ngắn gọn</div>
-            </div>
-            <div className="flex items-start gap-2">
-              <span>❓</span>
-              <div><strong>FAQ:</strong> Câu hỏi thường gặp theo sản phẩm</div>
-            </div>
+          <div className="space-y-1.5 text-sm text-gray-700">
+            <div>• <strong>Hero:</strong> Banner chính</div>
+            <div>• <strong>Giới thiệu:</strong> Thông tin công ty</div>
+            <div>• <strong>Sản phẩm:</strong> Danh sách sản phẩm</div>
+            <div>• <strong>Tin tức:</strong> Bài viết</div>
+            <div>• <strong>Đánh giá:</strong> Phản hồi khách hàng</div>
+            <div>• <strong>Thư viện:</strong> Gallery ảnh</div>
+            <div>• <strong>Liên hệ:</strong> Thông tin liên lạc</div>
           </div>
         </div>
 
-        {/* Dedicated Pages */}
-        <div className="bg-gradient-to-br from-green-50 to-teal-50 p-5 rounded-xl border border-green-200 shadow-sm">
+        <div className="bg-gradient-to-br from-green-50 to-teal-50 p-5 rounded-xl border border-green-200">
           <h3 className="text-base font-semibold text-gray-800 mb-3 flex items-center gap-2">
-            <span>📄</span> Trang Riêng & Về Chúng Tôi
+            <span>📄</span> Trang Riêng
           </h3>
-          <div className="space-y-2 text-sm text-gray-700">
-            <div className="flex items-start gap-2">
-              <span>📧</span>
-              <div><strong>Trang Liên Hệ:</strong> Hero, 3 contact cards, map embed</div>
-            </div>
-            <div className="flex items-start gap-2">
-              <span>🛍️</span>
-              <div><strong>Trang Sản Phẩm:</strong> Hero, categories, product list với CRUD</div>
-            </div>
-            <div className="flex items-start gap-2">
-              <span>🤝</span>
-              <div><strong>Đối tác:</strong> Hero, intro, danh sách benefits, CTA</div>
-            </div>
-            <div className="flex items-start gap-2">
-              <span>🎯</span>
-              <div><strong>Sứ mệnh:</strong> Vision, mission points, core values</div>
-            </div>
-            <div className="flex items-start gap-2">
-              <span>💬</span>
-              <div><strong>Thông điệp:</strong> Greeting, paragraphs, quote, signature</div>
-            </div>
+          <div className="space-y-1.5 text-sm text-gray-700">
+            <div>• <strong>Liên Hệ:</strong> Form liên hệ, bản đồ</div>
+            <div>• <strong>Sản Phẩm:</strong> Catalog sản phẩm</div>
+            <div>• <strong>Đối tác:</strong> Logo & thông tin đối tác</div>
+            <div>• <strong>Sứ mệnh:</strong> Vision & Mission</div>
+            <div>• <strong>Thông điệp:</strong> Lời nhắn từ lãnh đạo</div>
           </div>
         </div>
       </div>
 
-      {/* Action Buttons Guide */}
+      {/* Action Buttons */}
       <div className="bg-gradient-to-br from-red-50 to-orange-50 p-6 rounded-xl border-l-4 border-red-400 shadow-md">
         <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
           <span>🔘</span> Các Nút Quan Trọng
         </h3>
-        <div className="grid sm:grid-cols-2 gap-4">
+        <div className="grid sm:grid-cols-3 gap-4">
           <div className="bg-white p-4 rounded-lg border-2 border-green-200">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-2xl">💾</span>
-              <h4 className="font-semibold text-green-700">Lưu Thay Đổi</h4>
+              <h4 className="font-semibold text-green-700">Lưu</h4>
             </div>
-            <ul className="text-sm text-gray-600 space-y-1">
-              <li>• Lưu lên <strong>Vercel KV</strong> (database cloud)</li>
-              <li>• Thay đổi hiển thị <strong>ngay lập tức</strong> trên website</li>
-              <li>• Nút sẽ <strong className="text-yellow-600">nhấp nháy màu vàng</strong> khi có thay đổi chưa lưu</li>
-              <li>• Có ở cả header và footer của content area</li>
-            </ul>
+            <p className="text-sm text-gray-600">Lưu thay đổi lên server. Nút sẽ nhấp nháy màu vàng khi có thay đổi chưa lưu.</p>
           </div>
 
           <div className="bg-white p-4 rounded-lg border-2 border-orange-200">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-2xl">🔄</span>
-              <h4 className="font-semibold text-orange-700">Reset / Khôi Phục</h4>
+              <h4 className="font-semibold text-orange-700">Reset</h4>
             </div>
-            <ul className="text-sm text-gray-600 space-y-1">
-              <li>• Đặt lại toàn bộ về <strong>nội dung mặc định</strong></li>
-              <li>• Xóa mọi thay đổi đã lưu trên Vercel KV</li>
-              <li>• <strong className="text-red-600">⚠️ KHÔNG thể hoàn tác!</strong></li>
-              <li>• Sẽ có hộp thoại xác nhận trước khi reset</li>
-            </ul>
+            <p className="text-sm text-gray-600">Đặt lại về nội dung mặc định. <strong className="text-red-600">Không thể hoàn tác!</strong></p>
           </div>
 
           <div className="bg-white p-4 rounded-lg border-2 border-blue-200">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-2xl">➕</span>
-              <h4 className="font-semibold text-blue-700">Thêm Mới (Add)</h4>
+              <h4 className="font-semibold text-blue-700">Thêm</h4>
             </div>
-            <ul className="text-sm text-gray-600 space-y-1">
-              <li>• Thêm item mới vào danh sách (sản phẩm, tin tức, benefits...)</li>
-              <li>• Form sẽ mở ra để bạn điền thông tin</li>
-              <li>• Nhớ điền đầy đủ các trường bắt buộc</li>
-            </ul>
-          </div>
-
-          <div className="bg-white p-4 rounded-lg border-2 border-gray-200">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-2xl">🗑️</span>
-              <h4 className="font-semibold text-gray-700">Xóa (Delete)</h4>
-            </div>
-            <ul className="text-sm text-gray-600 space-y-1">
-              <li>• Xóa item khỏi danh sách</li>
-              <li>• Thay đổi chưa lưu cho đến khi nhấn "💾 Lưu"</li>
-              <li>• Có thể undo bằng cách refresh trang (nếu chưa lưu)</li>
-            </ul>
+            <p className="text-sm text-gray-600">Thêm mới item (sản phẩm, tin tức, đối tác...).</p>
           </div>
         </div>
       </div>
@@ -3268,185 +3255,94 @@ function GuideEditor() {
       {/* Image Upload */}
       <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-xl border-l-4 border-purple-400 shadow-md">
         <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-          <span>📸</span> Upload & Quản Lý Hình Ảnh
+          <span>📸</span> Upload Hình Ảnh
         </h3>
-        <div className="space-y-4">
-          <div className="bg-white p-4 rounded-lg border border-purple-200">
-            <h4 className="font-semibold text-gray-800 mb-2">Cách upload hình ảnh:</h4>
-            <ol className="list-decimal list-inside space-y-2 text-sm text-gray-600">
-              <li>Tìm ô "Chọn hoặc kéo thả hình ảnh" (dashed border)</li>
-              <li>Click vào ô hoặc kéo thả file trực tiếp</li>
-              <li>Chọn file ảnh: JPG, PNG, GIF, WebP (max 4.5MB)</li>
-              <li>Hình sẽ tự động upload lên <strong>Cloudinary</strong></li>
-              <li>URL ảnh sẽ được điền tự động vào input field</li>
-            </ol>
-          </div>
-
-          <div className="bg-white p-4 rounded-lg border border-purple-200">
-            <h4 className="font-semibold text-gray-800 mb-2">💡 Tips upload ảnh:</h4>
-            <ul className="space-y-1.5 text-sm text-gray-600">
-              <li className="flex gap-2">
-                <span>✓</span>
-                <span><strong>Kích thước:</strong> Nên dùng ảnh dưới 2MB để website load nhanh</span>
-              </li>
-              <li className="flex gap-2">
-                <span>✓</span>
-                <span><strong>Độ phân giải:</strong> Hero images: 1920x1080, Product icons: 500x500</span>
-              </li>
-              <li className="flex gap-2">
-                <span>✓</span>
-                <span><strong>Format:</strong> WebP tối ưu nhất, PNG cho ảnh có nền trong suốt</span>
-              </li>
-              <li className="flex gap-2">
-                <span>✓</span>
-                <span><strong>Paste URL:</strong> Bạn cũng có thể paste link ảnh từ nguồn khác</span>
-              </li>
-            </ul>
+        <div className="bg-white p-4 rounded-lg border border-purple-200">
+          <ol className="list-decimal list-inside space-y-2 text-sm text-gray-600">
+            <li>Tìm ô "Chọn hoặc kéo thả hình ảnh"</li>
+            <li>Click hoặc kéo thả file ảnh (JPG, PNG, WebP, max 4.5MB)</li>
+            <li>Hình sẽ tự động upload và URL được điền vào</li>
+          </ol>
+          <div className="mt-3 pt-3 border-t border-purple-200">
+            <p className="text-xs text-gray-500">
+              💡 <strong>Tip:</strong> Dùng ảnh dưới 2MB, độ phân giải phù hợp để website load nhanh.
+            </p>
           </div>
         </div>
       </div>
 
-      {/* CRUD Operations */}
-      <div className="bg-gradient-to-br from-cyan-50 to-blue-50 p-6 rounded-xl border-l-4 border-cyan-400 shadow-md">
+      {/* System Info */}
+      <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-xl border border-gray-300">
+        <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
+          <span>ℹ️</span> Thông Tin Hệ Thống
+        </h3>
+        <div className="grid sm:grid-cols-2 gap-4 text-sm">
+          <div>
+            <p className="text-gray-600"><strong>Version:</strong> 1.0</p>
+            <p className="text-gray-600"><strong>Release:</strong> November 2025</p>
+            <p className="text-gray-600"><strong>Developer:</strong> minhdq25</p>
+          </div>
+          <div>
+            <p className="text-gray-600"><strong>Framework:</strong> Next.js 16</p>
+            <p className="text-gray-600"><strong>Database:</strong> Vercel KV</p>
+            <p className="text-gray-600"><strong>Images:</strong> Cloudinary</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Contact */}
+      <div className="bg-gradient-to-br from-blue-50 to-cyan-50 p-6 rounded-xl border-l-4 border-blue-500 shadow-md">
         <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-          <span>⚙️</span> CRUD Operations (Thêm/Sửa/Xóa)
+          <span>📞</span> Cần Hỗ Trợ?
         </h3>
-        <div className="space-y-3">
-          <p className="text-gray-700">
-            Các trang có danh sách (Products, News, Benefits, Paragraphs...) đều hỗ trợ CRUD đầy đủ:
-          </p>
-          <div className="grid sm:grid-cols-2 gap-3">
-            <div className="bg-white p-3 rounded-lg border border-cyan-200">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-lg">➕</span>
-                <strong className="text-sm">Create (Tạo mới)</strong>
-              </div>
-              <p className="text-xs text-gray-600">Nhấn nút "Thêm..." để tạo item mới. Form sẽ mở ra với các field trống.</p>
+        <p className="text-sm text-gray-600 mb-4">Liên hệ với developer nếu bạn gặp vấn đề hoặc cần hỗ trợ:</p>
+        <div className="grid sm:grid-cols-3 gap-3">
+          <a 
+            href="https://m.facebook.com/minhgtr25" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 bg-white p-4 rounded-lg border-2 border-blue-200 hover:border-blue-400 transition-colors group"
+          >
+            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+              <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
             </div>
-            <div className="bg-white p-3 rounded-lg border border-cyan-200">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-lg">👁️</span>
-                <strong className="text-sm">Read (Xem)</strong>
-              </div>
-              <p className="text-xs text-gray-600">Tất cả items được hiển thị dạng danh sách/card với thông tin đầy đủ.</p>
+            <div>
+              <p className="text-xs text-gray-500">Facebook</p>
+              <p className="text-sm font-semibold text-gray-800">Quang Minh</p>
             </div>
-            <div className="bg-white p-3 rounded-lg border border-cyan-200">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-lg">✏️</span>
-                <strong className="text-sm">Update (Cập nhật)</strong>
-              </div>
-              <p className="text-xs text-gray-600">Thay đổi trực tiếp trong input fields hoặc dùng nút "Edit" để mở form.</p>
-            </div>
-            <div className="bg-white p-3 rounded-lg border border-cyan-200">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-lg">🗑️</span>
-                <strong className="text-sm">Delete (Xóa)</strong>
-              </div>
-              <p className="text-xs text-gray-600">Nhấn nút "Xóa" màu đỏ. Thay đổi áp dụng sau khi "Lưu".</p>
-            </div>
-          </div>
-        </div>
-      </div>
+          </a>
 
-      {/* Best Practices */}
-      <div className="bg-gradient-to-br from-emerald-50 to-green-50 p-6 rounded-xl border-l-4 border-emerald-400 shadow-md">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-          <span>⭐</span> Best Practices & Tips
-        </h3>
-        <div className="grid sm:grid-cols-2 gap-4">
-          <div className="space-y-3">
-            <div className="flex gap-3">
-              <span className="text-green-600 text-xl flex-shrink-0">✓</span>
-              <div>
-                <h4 className="font-semibold text-sm text-gray-800">Lưu thường xuyên</h4>
-                <p className="text-xs text-gray-600">Nhấn "Lưu" sau mỗi thay đổi quan trọng để tránh mất dữ liệu</p>
-              </div>
+          <a 
+            href="mailto:dquangminh0103@gmail.com"
+            className="flex items-center gap-3 bg-white p-4 rounded-lg border-2 border-red-200 hover:border-red-400 transition-colors group"
+          >
+            <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center group-hover:bg-red-200 transition-colors">
+              <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
             </div>
-            <div className="flex gap-3">
-              <span className="text-green-600 text-xl flex-shrink-0">✓</span>
-              <div>
-                <h4 className="font-semibold text-sm text-gray-800">Kiểm tra responsive</h4>
-                <p className="text-xs text-gray-600">Test trên nhiều thiết bị (mobile/tablet/desktop) sau khi update</p>
-              </div>
+            <div>
+              <p className="text-xs text-gray-500">Email</p>
+              <p className="text-sm font-semibold text-gray-800">dquangminh0103</p>
             </div>
-            <div className="flex gap-3">
-              <span className="text-green-600 text-xl flex-shrink-0">✓</span>
-              <div>
-                <h4 className="font-semibold text-sm text-gray-800">Toast notifications</h4>
-                <p className="text-xs text-gray-600">Chú ý thông báo ở góc trên phải để biết trạng thái lưu/xóa</p>
-              </div>
-            </div>
-          </div>
-          <div className="space-y-3">
-            <div className="flex gap-3">
-              <span className="text-green-600 text-xl flex-shrink-0">✓</span>
-              <div>
-                <h4 className="font-semibold text-sm text-gray-800">Preview changes</h4>
-                <p className="text-xs text-gray-600">Mở website ở tab khác để xem thay đổi real-time</p>
-              </div>
-            </div>
-            <div className="flex gap-3">
-              <span className="text-green-600 text-xl flex-shrink-0">✓</span>
-              <div>
-                <h4 className="font-semibold text-sm text-gray-800">Backup quan trọng</h4>
-                <p className="text-xs text-gray-600">Trước khi Reset, hãy chắc chắn đã backup nội dung quan trọng</p>
-              </div>
-            </div>
-            <div className="flex gap-3">
-              <span className="text-green-600 text-xl flex-shrink-0">✓</span>
-              <div>
-                <h4 className="font-semibold text-sm text-gray-800">SEO friendly</h4>
-                <p className="text-xs text-gray-600">Điền đầy đủ title, description, alt text cho ảnh</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+          </a>
 
-      {/* Technical Info */}
-      <div className="bg-gradient-to-br from-slate-50 to-gray-100 p-6 rounded-xl border border-slate-300 shadow-sm">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-          <span>🔧</span> Thông Tin Kỹ Thuật
-        </h3>
-        <div className="grid sm:grid-cols-2 gap-4 text-sm text-gray-700">
-          <div className="bg-white p-3 rounded-lg border border-gray-200">
-            <strong>💾 Storage:</strong> Vercel KV (Upstash Redis) - Lưu trữ cloud an toàn
-          </div>
-          <div className="bg-white p-3 rounded-lg border border-gray-200">
-            <strong>📸 Images:</strong> Cloudinary (dahjyasbm) - CDN nhanh, tối ưu tự động
-          </div>
-          <div className="bg-white p-3 rounded-lg border border-gray-200">
-            <strong>⚡ Rendering:</strong> Server-side với force-dynamic - SEO tốt nhất
-          </div>
-          <div className="bg-white p-3 rounded-lg border border-gray-200">
-            <strong>🔐 Security:</strong> Password protected admin panel (admin123)
-          </div>
-        </div>
-        <div className="mt-4 bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-          <p className="text-sm text-gray-700">
-            <strong>⚠️ Lưu ý bảo mật:</strong> Đổi mật khẩu mặc định "admin123" trong code (dòng 88) 
-            trước khi deploy production. Tìm đoạn <code className="bg-gray-200 px-1 rounded">if (password === 'admin123')</code> 
-            và thay bằng mật khẩu mạnh hơn.
-          </p>
-        </div>
-      </div>
-
-      {/* Support */}
-      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-6 rounded-xl shadow-lg">
-        <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-          <span>💬</span> Cần Hỗ Trợ?
-        </h3>
-        <p className="text-sm mb-4 opacity-90">
-          Nếu gặp vấn đề hoặc cần thêm tính năng, vui lòng liên hệ team phát triển. 
-          Admin panel được xây dựng với Next.js 16, React 19, TypeScript và Tailwind CSS 4.
-        </p>
-        <div className="flex gap-3 text-sm">
-          <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg">
-            <strong>Version:</strong> 1.0.0
-          </div>
-          <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg">
-            <strong>Last Updated:</strong> Nov 2024
-          </div>
+          <a 
+            href="tel:0971653005"
+            className="flex items-center gap-3 bg-white p-4 rounded-lg border-2 border-green-200 hover:border-green-400 transition-colors group"
+          >
+            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">
+              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-xs text-gray-500">Điện thoại</p>
+              <p className="text-sm font-semibold text-gray-800">097 165 3005</p>
+            </div>
+          </a>
         </div>
       </div>
     </div>
