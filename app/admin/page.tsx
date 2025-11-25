@@ -20,6 +20,8 @@ export default function AdminPanel() {
   const [unsavedChanges, setUnsavedChanges] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [sidebarOpen, setSidebarOpen] = useState(true)
   const { toast } = useToast()
 
   useEffect(() => {
@@ -182,9 +184,6 @@ export default function AdminPanel() {
       </div>
     )
   }
-
-  const [searchQuery, setSearchQuery] = useState('')
-  const [sidebarOpen, setSidebarOpen] = useState(true)
 
   // Navigation structure with categories
   const navigationGroups = [
