@@ -3,6 +3,8 @@ import { Montserrat, Geist_Mono, Dancing_Script } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import { Toaster } from '@/components/ui/toaster'
+import { kv } from '@vercel/kv'
+import { defaultAdminContent } from '@/lib/admin-content'
 
 const _montserrat = Montserrat({ 
   subsets: ["latin", "vietnamese"],
@@ -14,27 +16,44 @@ const _dancingScript = Dancing_Script({
   weight: ['400', '500', '600', '700']
 });
 
-export const metadata: Metadata = {
-  title: 'CAMICO - Thức ăn xanh chăn nuôi bền vững',
-  description: 'CAMICO là thương hiệu dẫn đầu trong lĩnh vực thức ăn chăn nuôi sinh học tại Việt Nam',
-  generator: 'v0.app',
-  icons: {
-    icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
-    ],
-    apple: '/apple-icon.png',
-  },
+// Fetch favicon configuration from admin content
+async function getFaviconConfig() {
+  try {
+    const content = await kv.get('admin-content')
+    if (content && typeof content === 'object' && 'favicon' in content) {
+      return (content as any).favicon
+    }
+  } catch (error) {
+    console.error('Error fetching favicon config:', error)
+  }
+  return defaultAdminContent.favicon
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const favicon = await getFaviconConfig()
+  
+  return {
+    title: 'CAMICO - Thức ăn xanh chăn nuôi bền vững',
+    description: 'CAMICO là thương hiệu dẫn đầu trong lĩnh vực thức ăn chăn nuôi sinh học tại Việt Nam',
+    generator: 'v0.app',
+    icons: {
+      icon: [
+        {
+          url: favicon?.lightIcon || '/icon-light-32x32.png',
+          media: '(prefers-color-scheme: light)',
+        },
+        {
+          url: favicon?.darkIcon || '/icon-dark-32x32.png',
+          media: '(prefers-color-scheme: dark)',
+        },
+        {
+          url: favicon?.svgIcon || '/icon.svg',
+          type: 'image/svg+xml',
+        },
+      ],
+      apple: favicon?.appleIcon || '/apple-icon.png',
+    },
+  }
 }
 
 export default function RootLayout({

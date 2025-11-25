@@ -353,6 +353,12 @@ export const defaultAdminContent: AdminContent = {
       },
     ],
   },
+  favicon: {
+    lightIcon: '/icon-light-32x32.png',
+    darkIcon: '/icon-dark-32x32.png',
+    svgIcon: '/icon.svg',
+    appleIcon: '/apple-icon.png',
+  },
 }
 
 // Get admin content from localStorage or use default

@@ -194,6 +194,14 @@ export interface PageContent {
   contactInfo: ContactInfo
 }
 
+// Favicon Types
+export interface FaviconConfig {
+  lightIcon: string
+  darkIcon: string
+  svgIcon: string
+  appleIcon: string
+}
+
 // Admin Content Types
 export interface AdminContent {
   pages: {
@@ -217,4 +225,5 @@ export interface AdminContent {
   products: Product[]
   news: NewsArticle[]
   faqs: Record<string, FAQ[]>
+  favicon?: FaviconConfig
 }

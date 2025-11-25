@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { ImageUploader } from '@/components/image-uploader'
 import { useToast } from '@/hooks/use-toast'
 
-type TabType = 'hero' | 'contact' | 'products' | 'news' | 'faqs' | 'pages' | 'about' | 'testimonials' | 'gallery' | 'guide' | 'contactPage' | 'productsPage' | 'aboutPartners' | 'aboutMission' | 'aboutMessage'
+type TabType = 'hero' | 'contact' | 'products' | 'news' | 'faqs' | 'pages' | 'about' | 'testimonials' | 'gallery' | 'guide' | 'contactPage' | 'productsPage' | 'aboutPartners' | 'aboutMission' | 'aboutMessage' | 'favicon'
 
 export default function AdminPanel() {
   const [adminContent, setAdminContent] = useState<AdminContent>(defaultAdminContent)
@@ -193,6 +193,12 @@ export default function AdminPanel() {
       items: [
         { id: 'contactPage' as TabType, icon: '📧', label: 'Trang Liên Hệ' },
         { id: 'productsPage' as TabType, icon: '🛍️', label: 'Trang Sản Phẩm' },
+      ]
+    },
+    {
+      title: '⚙️ Cài đặt',
+      items: [
+        { id: 'favicon' as TabType, icon: '🔖', label: 'Favicon' },
       ]
     },
     {
@@ -504,6 +510,16 @@ export default function AdminPanel() {
 
           {activeTab === 'contactPage' && (
             <ContactPageEditor
+              content={adminContent}
+              setContent={(content) => {
+                setAdminContent(content)
+                setUnsavedChanges(true)
+              }}
+            />
+          )}
+
+          {activeTab === 'favicon' && (
+            <FaviconEditor
               content={adminContent}
               setContent={(content) => {
                 setAdminContent(content)
@@ -2529,6 +2545,161 @@ function PagesEditor({
             />
           </div>
         </div>
+      </div>
+    </div>
+  )
+}
+
+// Favicon Editor Component
+function FaviconEditor({
+  content,
+  setContent,
+}: {
+  content: AdminContent
+  setContent: (content: AdminContent) => void
+}) {
+  const favicon = content.favicon || {
+    lightIcon: '/icon-light-32x32.png',
+    darkIcon: '/icon-dark-32x32.png',
+    svgIcon: '/icon.svg',
+    appleIcon: '/apple-icon.png',
+  }
+
+  const updateFavicon = (field: string, value: string) => {
+    setContent({
+      ...content,
+      favicon: {
+        ...favicon,
+        [field]: value,
+      },
+    })
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center gap-4 pb-4 border-b-2 border-gray-200">
+        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center shadow-lg">
+          <span className="text-2xl">🔖</span>
+        </div>
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800">Favicon (Logo trên Tab)</h2>
+          <p className="text-sm text-gray-500">Quản lý logo nhỏ hiển thị trên tab trình duyệt</p>
+        </div>
+      </div>
+
+      <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded">
+        <p className="text-sm text-yellow-800">
+          <strong>Lưu ý:</strong> Sau khi thay đổi favicon, bạn cần làm mới (F5) hoặc xóa cache trình duyệt để thấy thay đổi.
+          Favicon sẽ được tự động cập nhật trong file <code className="bg-yellow-100 px-1 rounded">app/layout.tsx</code>
+        </p>
+      </div>
+
+      <div className="space-y-4 bg-gradient-to-br from-gray-50 to-purple-50 p-6 rounded-xl border border-gray-200">
+        <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+          <span>☀️</span> Light Mode Icon (32x32px)
+        </h3>
+        <p className="text-sm text-gray-600">Icon hiển thị khi trình duyệt ở chế độ sáng</p>
+        <Input
+          value={favicon.lightIcon}
+          onChange={(e) => updateFavicon('lightIcon', e.target.value)}
+          placeholder="/icon-light-32x32.png"
+          className="border-2 focus:border-purple-500"
+        />
+        <ImageUploader
+          value={favicon.lightIcon}
+          onChange={(url) => updateFavicon('lightIcon', url)}
+          label="Upload Light Icon"
+        />
+        {favicon.lightIcon && (
+          <div className="bg-white p-4 rounded border-2 border-gray-200">
+            <p className="text-xs text-gray-500 mb-2">Preview:</p>
+            <img src={favicon.lightIcon} alt="Light favicon" className="w-8 h-8" />
+          </div>
+        )}
+      </div>
+
+      <div className="space-y-4 bg-gradient-to-br from-gray-50 to-slate-50 p-6 rounded-xl border border-gray-200">
+        <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+          <span>🌙</span> Dark Mode Icon (32x32px)
+        </h3>
+        <p className="text-sm text-gray-600">Icon hiển thị khi trình duyệt ở chế độ tối</p>
+        <Input
+          value={favicon.darkIcon}
+          onChange={(e) => updateFavicon('darkIcon', e.target.value)}
+          placeholder="/icon-dark-32x32.png"
+          className="border-2 focus:border-slate-500"
+        />
+        <ImageUploader
+          value={favicon.darkIcon}
+          onChange={(url) => updateFavicon('darkIcon', url)}
+          label="Upload Dark Icon"
+        />
+        {favicon.darkIcon && (
+          <div className="bg-gray-900 p-4 rounded border-2 border-gray-700">
+            <p className="text-xs text-gray-400 mb-2">Preview (on dark background):</p>
+            <img src={favicon.darkIcon} alt="Dark favicon" className="w-8 h-8" />
+          </div>
+        )}
+      </div>
+
+      <div className="space-y-4 bg-gradient-to-br from-gray-50 to-blue-50 p-6 rounded-xl border border-gray-200">
+        <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+          <span>📐</span> SVG Icon (Scalable)
+        </h3>
+        <p className="text-sm text-gray-600">Icon dạng SVG, có thể scale mà không mất chất lượng</p>
+        <Input
+          value={favicon.svgIcon}
+          onChange={(e) => updateFavicon('svgIcon', e.target.value)}
+          placeholder="/icon.svg"
+          className="border-2 focus:border-blue-500"
+        />
+        <ImageUploader
+          value={favicon.svgIcon}
+          onChange={(url) => updateFavicon('svgIcon', url)}
+          label="Upload SVG Icon"
+        />
+        {favicon.svgIcon && (
+          <div className="bg-white p-4 rounded border-2 border-gray-200">
+            <p className="text-xs text-gray-500 mb-2">Preview:</p>
+            <img src={favicon.svgIcon} alt="SVG favicon" className="w-8 h-8" />
+          </div>
+        )}
+      </div>
+
+      <div className="space-y-4 bg-gradient-to-br from-gray-50 to-red-50 p-6 rounded-xl border border-gray-200">
+        <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+          <span>🍎</span> Apple Touch Icon (180x180px)
+        </h3>
+        <p className="text-sm text-gray-600">Icon hiển thị khi lưu trang web vào Home Screen trên iOS</p>
+        <Input
+          value={favicon.appleIcon}
+          onChange={(e) => updateFavicon('appleIcon', e.target.value)}
+          placeholder="/apple-icon.png"
+          className="border-2 focus:border-red-500"
+        />
+        <ImageUploader
+          value={favicon.appleIcon}
+          onChange={(url) => updateFavicon('appleIcon', url)}
+          label="Upload Apple Icon"
+        />
+        {favicon.appleIcon && (
+          <div className="bg-white p-4 rounded border-2 border-gray-200">
+            <p className="text-xs text-gray-500 mb-2">Preview:</p>
+            <img src={favicon.appleIcon} alt="Apple touch icon" className="w-16 h-16 rounded-xl" />
+          </div>
+        )}
+      </div>
+
+      <div className="bg-blue-50 border-l-4 border-blue-400 p-4 rounded">
+        <p className="text-sm text-blue-800">
+          <strong>Hướng dẫn:</strong>
+        </p>
+        <ul className="text-sm text-blue-700 mt-2 space-y-1 list-disc list-inside">
+          <li>Light/Dark Icon: Kích thước 32x32px hoặc 16x16px, định dạng PNG</li>
+          <li>SVG Icon: File SVG, kích thước tùy ý (vector)</li>
+          <li>Apple Icon: Kích thước 180x180px, định dạng PNG</li>
+          <li>Tải ảnh lên bằng ImageUploader hoặc nhập URL trực tiếp</li>
+        </ul>
       </div>
     </div>
   )
