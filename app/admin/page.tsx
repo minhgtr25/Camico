@@ -64,6 +64,7 @@ export default function AdminPanel() {
           title: 'Lỗi tải dữ liệu',
           description: 'Không thể tải dữ liệu từ server. Sử dụng dữ liệu mặc định.',
           variant: 'destructive',
+          duration: 1000,
         })
         setAdminContent(defaultAdminContent)
       } finally {
@@ -82,12 +83,14 @@ export default function AdminPanel() {
       toast({
         title: '✅ Đăng nhập thành công',
         description: 'Chào mừng đến Admin Panel',
+        duration: 1000,
       })
     } else {
       toast({
         title: '❌ Mật khẩu không đúng',
         description: 'Vui lòng thử lại',
         variant: 'destructive',
+        duration: 1000,
       })
       setPassword('')
     }
@@ -102,6 +105,7 @@ export default function AdminPanel() {
         toast({
           title: '✅ Đã lưu thành công',
           description: 'Nội dung đã được cập nhật trên server',
+          duration: 1000,
         })
       } else {
         throw new Error('Save failed')
@@ -112,6 +116,7 @@ export default function AdminPanel() {
         title: '❌ Lỗi lưu dữ liệu',
         description: 'Không thể lưu dữ liệu lên server. Vui lòng thử lại.',
         variant: 'destructive',
+        duration: 1000,
       })
     } finally {
       setIsSaving(false)
@@ -129,6 +134,7 @@ export default function AdminPanel() {
           toast({
             title: '🔄 Đã khôi phục',
             description: 'Nội dung đã được đặt lại về mặc định trên server',
+            duration: 1000,
           })
         } else {
           throw new Error('Reset failed')
@@ -139,6 +145,7 @@ export default function AdminPanel() {
           title: '❌ Lỗi khôi phục',
           description: 'Không thể khôi phục dữ liệu. Vui lòng thử lại.',
           variant: 'destructive',
+          duration: 1000,
         })
       } finally {
         setIsSaving(false)
@@ -301,14 +308,14 @@ export default function AdminPanel() {
               )}
             </Button>
 
-            {/* Reset Button - Desktop only */}
+            {/* Reset Button */}
             <Button
               onClick={handleReset}
               disabled={isSaving || isLoading}
-              className="hidden md:flex bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold px-4 py-2 disabled:opacity-50 border-0"
+              className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold px-3 md:px-4 py-2 disabled:opacity-50 border-0"
             >
-              <span className="mr-2">🔄</span>
-              Reset
+              <span className="mr-1 md:mr-2">🔄</span>
+              <span className="hidden sm:inline">Reset</span>
             </Button>
 
             {/* Logout Button */}
@@ -755,6 +762,7 @@ function TestimonialsEditor({
         title: '⚠️ Thiếu thông tin',
         description: 'Vui lòng nhập tên và nội dung đánh giá',
         variant: 'destructive',
+        duration: 1000,
       })
       return
     }
@@ -780,6 +788,7 @@ function TestimonialsEditor({
     toast({
       title: '✅ Đã thêm đánh giá',
       description: `Đánh giá của ${formData.name} đã được thêm`,
+      duration: 1000,
     })
   }
 
@@ -811,6 +820,7 @@ function TestimonialsEditor({
     toast({
       title: '🗑️ Đã xoá',
       description: 'Đánh giá đã được xoá',
+      duration: 1000,
     })
   }
 
@@ -955,6 +965,7 @@ function TestimonialsEditor({
                     toast({
                       title: '✅ Đã cập nhật',
                       description: 'Thay đổi đã được lưu',
+                      duration: 1000,
                     })
                   }}
                   className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 rounded-lg transition-all"
@@ -988,6 +999,7 @@ function GalleryEditor({
         title: '⚠️ Thiếu hình ảnh',
         description: 'Vui lòng chọn hoặc nhập URL hình ảnh',
         variant: 'destructive',
+        duration: 1000,
       })
       return
     }
