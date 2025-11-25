@@ -58,12 +58,12 @@ export default async function SanPhamPage() {
       </div>
       
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-[#2d5016] to-[#3d6826] text-white py-16 md:py-24">
+      <section className="bg-[#f5f5dc] py-16 md:py-24">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold text-[#2d5016] mb-4">
             {content.hero?.title || 'SẢN PHẨM CỦA CAMICO'}
           </h1>
-          <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto">
             {content.hero?.subtitle || 'Thức ăn xanh - Chăn nuôi bền vững - An toàn cho vật nuôi'}
           </p>
         </div>

@@ -28,10 +28,10 @@ export default async function TinTucPage() {
       <Header />
       
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-[#2d5016] to-[#3d6826] text-white py-16 md:py-24">
+      <section className="bg-[#f5f5dc] py-16 md:py-24">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">📰 Tin Tức CAMICO</h1>
-          <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-bold text-[#2d5016] mb-4">📰 Tin Tức CAMICO</h1>
+          <p className="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto">
             Cập nhật tin tức mới nhất về sản phẩm, công nghệ và xu hướng chăn nuôi bền vững
           </p>
         </div>
