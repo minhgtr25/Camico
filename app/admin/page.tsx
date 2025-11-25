@@ -549,7 +549,7 @@ function AboutEditor({
   content: AdminContent
   setContent: (content: AdminContent) => void
 }>) {
-  const about = content.pages.home.about
+  const about = content.pages?.home?.about || { title: '', emoji: '', content: [], quoteText: '', logoImage: '' }
 
   return (
     <div className="space-y-6">
@@ -649,7 +649,7 @@ function AboutEditor({
 
       <div className="space-y-4">
         <h3 className="font-semibold text-gray-800">Nội dung ({about.content.length} đoạn)</h3>
-        {about.content.map((text, idx) => (
+        {(about.content || []).map((text, idx) => (
           <div key={`${about.title}-content-${idx}`} className="space-y-2">
             <label htmlFor={`content-${idx}`} className="block text-sm font-semibold text-gray-700">Đoạn {idx + 1}</label>
             <Textarea
@@ -689,7 +689,7 @@ function TestimonialsEditor({
 }>) {
   const [formData, setFormData] = useState({ name: '', role: '', image: '', rating: 5, feedback: '' })
   const [expandedId, setExpandedId] = useState<number | null>(null)
-  const testimonials = content.pages.home.testimonials
+  const testimonials = content.pages?.home?.testimonials || []
   const { toast } = useToast()
 
   const handleAddTestimonial = () => {
@@ -922,7 +922,7 @@ function GalleryEditor({
   setContent: (content: AdminContent) => void
 }>) {
   const [formData, setFormData] = useState({ image: '', title: '', description: '', fullDescription: '' })
-  const gallery = content.pages.home.gallery
+  const gallery = content.pages?.home?.gallery || []
   const { toast } = useToast()
 
   const handleAddImage = () => {
@@ -1070,7 +1070,7 @@ function HeroEditor({
   content: AdminContent
   setContent: (content: AdminContent) => void
 }>) {
-  const hero = content.pages.home.hero
+  const hero = content.pages?.home?.hero || { title: '', subtitle: '', image: '', buttonText: '', buttonLink: '' }
 
   return (
     <div className="space-y-6">
@@ -1159,7 +1159,7 @@ function ContactEditor({
   content: AdminContent
   setContent: (content: AdminContent) => void
 }>) {
-  const contact = content.pages.home.contactInfo
+  const contact = content.pages?.home?.contactInfo || { phone: '', email: '', address: '' }
 
   return (
     <div className="space-y-6">
@@ -2193,7 +2193,7 @@ function FAQEditor({
           Danh Sách Câu Hỏi
         </h3>
         <div className="space-y-3">
-        {currentFAQs.map((faq) => (
+        {(currentFAQs || []).map((faq) => (
           <div key={faq.id} className="bg-white p-5 rounded-xl border-l-4 border-amber-400 shadow-md hover:shadow-lg transition-all">
             <div className="flex justify-between items-start gap-4 mb-3">
               <div className="flex-1">
