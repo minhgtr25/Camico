@@ -9,19 +9,13 @@ import { ContactSection } from "@/components/contact-section"
 import { Footer } from "@/components/footer"
 import { BackToTop } from "@/components/back-to-top"
 import { defaultAdminContent } from "@/lib/admin-content"
+import { kv } from '@vercel/kv'
 
 async function getAdminContent() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
-    const res = await fetch(`${baseUrl}/api/admin/content`, {
-      cache: 'no-store', // Luôn lấy data mới nhất
-    })
-    
-    if (!res.ok) {
-      return defaultAdminContent
-    }
-    
-    return await res.json()
+    // Gọi trực tiếp KV thay vì fetch API
+    const content = await kv.get('admin-content')
+    return content || defaultAdminContent
   } catch (error) {
     console.error('Error fetching admin content:', error)
     return defaultAdminContent
