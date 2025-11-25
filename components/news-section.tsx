@@ -50,8 +50,8 @@ export function NewsSection({ content }: Readonly<{ content: NewsArticle[] }>) {
     return list.sort((a, b) => parseDate(b.date).getTime() - parseDate(a.date).getTime())
   }, [content, featuredArticle])
 
-  // On landing page show only the 3 newest regular articles
-  const visibleRegular = useMemo(() => regularArticles.slice(0, 3), [regularArticles])
+  // On landing page show NO regular articles - only featured article
+  const visibleRegular = useMemo(() => [], [regularArticles])
   
   if (!content || content.length === 0) {
     return null

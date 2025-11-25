@@ -1843,10 +1843,16 @@ function NewsEditor({
             <Textarea
               id="news-excerpt"
               value={formData.excerpt}
-              onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+              onChange={(e) => {
+                setFormData({ ...formData, excerpt: e.target.value })
+                // Auto-resize textarea
+                e.target.style.height = 'auto'
+                e.target.style.height = e.target.scrollHeight + 'px'
+              }}
               placeholder="Tóm tắt bài viết"
               rows={3}
-              className="w-full border-2 border-indigo-200 rounded-lg px-4 py-3 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all"
+              className="w-full border-2 border-indigo-200 rounded-lg px-4 py-3 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all resize-none overflow-hidden"
+              style={{ minHeight: '80px' }}
             />
           </div>
           <div className="grid sm:grid-cols-2 gap-4">
@@ -1924,10 +1930,16 @@ function NewsEditor({
             <Textarea
               id="news-content"
               value={formData.content}
-              onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+              onChange={(e) => {
+                setFormData({ ...formData, content: e.target.value })
+                // Auto-resize textarea
+                e.target.style.height = 'auto'
+                e.target.style.height = e.target.scrollHeight + 'px'
+              }}
               placeholder="Nội dung bài viết (có thể dùng HTML)"
               rows={8}
-              className="w-full border-2 border-indigo-200 rounded-lg px-4 py-3 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all font-mono text-sm"
+              className="w-full border-2 border-indigo-200 rounded-lg px-4 py-3 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all font-mono text-sm resize-none overflow-hidden"
+              style={{ minHeight: '200px' }}
             />
           </div>
 
