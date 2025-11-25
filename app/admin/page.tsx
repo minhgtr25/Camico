@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { AdminContent } from '@/lib/types'
 import { fetchAdminContentFromServer, saveAdminContentToServer, resetAdminContentOnServer, defaultAdminContent } from '@/lib/admin-content'
-import { newsArticles as fallbackNews } from '@/lib/news-data'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -25,55 +24,28 @@ export default function AdminPanel() {
   const { toast } = useToast()
 
   useEffect(() => {
-    // Load content from server on mount and merge with fallback news
-    async function loadContent() {
-      setIsLoading(true)
-      try {
-        const stored = await fetchAdminContentFromServer()
-
-        // Merge fallback news with stored admin.news so admin can edit all frontend articles.
-        const map = new Map<number, any>()
-        for (const a of fallbackNews) map.set(a.id, { ...a, featured: Boolean((a as any).featured) })
-        if (stored?.news && Array.isArray(stored.news)) {
-          for (const a of stored.news) map.set(a.id, { ...(map.get(a.id) ?? a), ...a })
-        }
-        const mergedNews = Array.from(map.values())
-
-        // Ensure home.newsHighlights includes any highlights from fallback if missing
-        const homeHighlights = stored?.pages?.home?.newsHighlights ?? []
-        const fallbackHighlights = fallbackNews
-          .filter((a) => Boolean((a as any).featured) && !homeHighlights.some((h: any) => h.id === a.id))
-          .map((a) => ({ ...a, featured: true }))
-
-        const mergedContent: AdminContent = {
-          ...stored,
-          news: mergedNews,
-          pages: {
-            ...stored.pages,
-            home: {
-              ...stored.pages.home,
-              newsHighlights: [...homeHighlights, ...fallbackHighlights],
-            },
-          },
-        }
-
-        setAdminContent(mergedContent)
-      } catch (e) {
-        console.error('Error loading admin content from server:', e)
-        toast({
-          title: 'Lỗi tải dữ liệu',
-          description: 'Không thể tải dữ liệu từ server. Sử dụng dữ liệu mặc định.',
-          variant: 'destructive',
-          duration: 1000,
-        })
-        setAdminContent(defaultAdminContent)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
+    // Load content from server on mount
     loadContent()
   }, [])
+
+  const loadContent = async () => {
+    setIsLoading(true)
+    try {
+      const stored = await fetchAdminContentFromServer()
+      setAdminContent(stored)
+    } catch (e) {
+      console.error('Error loading admin content from server:', e)
+      toast({
+        title: 'Lỗi tải dữ liệu',
+        description: 'Không thể tải dữ liệu từ server. Sử dụng dữ liệu mặc định.',
+        variant: 'destructive',
+        duration: 1000,
+      })
+      setAdminContent(defaultAdminContent)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
@@ -107,6 +79,8 @@ export default function AdminPanel() {
           description: 'Nội dung đã được cập nhật trên server',
           duration: 1000,
         })
+        // Refetch content from server to ensure UI is in sync
+        await loadContent()
       } else {
         throw new Error('Save failed')
       }
@@ -129,13 +103,14 @@ export default function AdminPanel() {
       try {
         const success = await resetAdminContentOnServer()
         if (success) {
-          setAdminContent(defaultAdminContent)
           setUnsavedChanges(false)
           toast({
             title: '🔄 Đã khôi phục',
             description: 'Nội dung đã được đặt lại về mặc định trên server',
             duration: 1000,
           })
+          // Refetch content from server
+          await loadContent()
         } else {
           throw new Error('Reset failed')
         }
