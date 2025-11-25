@@ -2481,7 +2481,7 @@ function ContactPageEditor({
   }
 
   const updateContactCard = (index: number, field: string, value: string) => {
-    const updatedCards = [...contactPage.contactCards]
+    const updatedCards = [...(contactPage.contactCards || [])]
     updatedCards[index] = { ...updatedCards[index], [field]: value }
     updateContactPage('contactCards', updatedCards)
   }
@@ -2538,7 +2538,7 @@ function ContactPageEditor({
           <span>📇</span> Thông Tin Liên Hệ
         </h3>
         
-        {contactPage.contactCards.map((card, index) => (
+        {(contactPage.contactCards || []).map((card, index) => (
           <div key={index} className="p-4 bg-white rounded-lg border-2 border-gray-100 space-y-3">
             <h4 className="font-semibold text-gray-700 flex items-center gap-2">
               <span className="text-lg">{card.icon === 'Phone' ? '📞' : card.icon === 'Mail' ? '📧' : '📍'}</span>

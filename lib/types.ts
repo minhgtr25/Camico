@@ -97,10 +97,11 @@ export interface ContactPageContent {
     subtitle: string
   }
   contactCards: {
-    phone: ContactInfo
-    email: ContactInfo
-    address: ContactInfo
-  }
+    icon: string
+    title: string
+    description: string
+    value: string
+  }[]
   mapEmbedUrl: string
 }
 

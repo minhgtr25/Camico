@@ -54,7 +54,7 @@ export function ContactPageClient({ contactPage }: ContactPageClientProps) {
     <div className="container mx-auto px-4 py-0 md:py-1">
       {/* Contact Info Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        {contactPage.contactCards.map((card, index) => (
+        {(contactPage.contactCards || []).map((card, index) => (
           <div 
             key={index}
             className="group relative overflow-hidden rounded-2xl bg-white p-8 shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
