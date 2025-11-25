@@ -69,8 +69,8 @@ export function ImageUploader({
       const { url } = await response.json()
       onChange(url)
       toast({
-        title: '✅ Upload thành công',
-        description: 'Ảnh đã được tải lên Cloudinary',
+        title: '✅ Đã cập nhật ảnh thành công',
+        description: 'Ảnh mới đã được lưu',
       })
     } catch (error) {
       console.error('Upload error:', error)
