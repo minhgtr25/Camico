@@ -1,12 +1,30 @@
-import { fetchAdminContentFromServer } from '@/lib/admin-content'
+import { defaultAdminContent } from '@/lib/admin-content'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import NewsClient from './news-client'
+import { kv } from '@vercel/kv'
 
 export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
+async function getAdminContent() {
+  // Chỉ gọi KV khi đang runtime, không phải build time
+  if (process.env.NODE_ENV === 'production' && process.env.VERCEL_ENV === undefined) {
+    // Build time - return default
+    return defaultAdminContent
+  }
+  
+  try {
+    const content = await kv.get('admin-content')
+    return content || defaultAdminContent
+  } catch (error) {
+    console.error('Error fetching admin content:', error)
+    return defaultAdminContent
+  }
+}
 
 export default async function TinTucPage() {
-  const adminContent = await fetchAdminContentFromServer()
+  const adminContent = await getAdminContent()
   
   // Only use articles from admin content (no fallback)
   // This ensures only articles that exist in admin panel are displayed
