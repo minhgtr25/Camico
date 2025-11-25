@@ -2594,8 +2594,8 @@ function ContactPageEditor({
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Ảnh Hero</label>
           <ImageUploader
-            currentImage={contactPage.hero.image}
-            onImageChange={(url) => updateContactPage('hero', { ...contactPage.hero, image: url })}
+            value={contactPage.hero.image}
+            onChange={(url) => updateContactPage('hero', { ...contactPage.hero, image: url })}
             label="Ảnh Hero"
           />
         </div>
@@ -2786,8 +2786,8 @@ function AboutPartnersEditor({
             className="border-2"
           />
           <ImageUploader 
-            currentImage={logoForm.logo} 
-            onImageChange={(url) => setLogoForm({ ...logoForm, logo: url })} 
+            value={logoForm.logo} 
+            onChange={(url) => setLogoForm({ ...logoForm, logo: url })} 
             label="Logo đối tác" 
           />
           <Button onClick={addPartnerLogo} className="w-full bg-purple-600 hover:bg-purple-700">
@@ -2814,8 +2814,8 @@ function AboutPartnersEditor({
                   placeholder="Tên đối tác" 
                 />
                 <ImageUploader 
-                  currentImage={partner.logo} 
-                  onImageChange={(url) => updatePartnerLogo(partner.id, 'logo', url)} 
+                  value={partner.logo} 
+                  onChange={(url) => updatePartnerLogo(partner.id, 'logo', url)} 
                   label="Logo" 
                 />
                 {partner.logo && (
@@ -2834,7 +2834,7 @@ function AboutPartnersEditor({
         <h3 className="font-semibold text-gray-800">🎯 Hero Section</h3>
         <Input value={aboutPartners.hero.title} onChange={(e) => updateField('hero.title', e.target.value)} placeholder="Đối tác chiến lược" />
         <Textarea value={aboutPartners.hero.subtitle} onChange={(e) => updateField('hero.subtitle', e.target.value)} placeholder="Cùng phát triển..." />
-        <ImageUploader currentImage={aboutPartners.hero.backgroundImage} onImageChange={(url) => updateField('hero.backgroundImage', url)} label="Ảnh nền Hero" />
+        <ImageUploader value={aboutPartners.hero.backgroundImage} onChange={(url) => updateField('hero.backgroundImage', url)} label="Ảnh nền Hero" />
       </div>
 
       {/* Intro */}
@@ -2925,7 +2925,7 @@ function AboutMissionEditor({ content, setContent }: { content: AdminContent; se
 
       <div className="space-y-4 bg-gradient-to-br from-gray-50 to-blue-50 p-6 rounded-xl border">
         <h3 className="font-semibold text-gray-800">🖼️ Hero Image</h3>
-        <ImageUploader currentImage={aboutMission.hero.image} onImageChange={(url) => updateField('hero.image', url)} label="Ảnh Hero" />
+        <ImageUploader value={aboutMission.hero.image} onChange={(url) => updateField('hero.image', url)} label="Ảnh Hero" />
       </div>
 
       <div className="space-y-4 bg-gradient-to-br from-gray-50 to-green-50 p-6 rounded-xl border">
@@ -3007,7 +3007,7 @@ function AboutMessageEditor({ content, setContent }: { content: AdminContent; se
 
       <div className="space-y-4 bg-gradient-to-br from-gray-50 to-blue-50 p-6 rounded-xl border">
         <h3 className="font-semibold text-gray-800">🖼️ Hero Image</h3>
-        <ImageUploader currentImage={aboutMessage.hero.image} onImageChange={(url) => updateField('hero', { image: url })} label="Ảnh Hero" />
+        <ImageUploader value={aboutMessage.hero.image} onChange={(url) => updateField('hero', { image: url })} label="Ảnh Hero" />
       </div>
 
       <div className="space-y-4 bg-gradient-to-br from-gray-50 to-green-50 p-6 rounded-xl border">
@@ -3095,7 +3095,7 @@ function ProductsPageEditor({ content, setContent }: { content: AdminContent; se
         <h3 className="font-semibold text-gray-800">🎯 Hero Section</h3>
         <Input value={productsPage.hero.title} onChange={(e) => updateField('hero', { ...productsPage.hero, title: e.target.value })} placeholder="SẢN PHẨM CỦA CAMICO" />
         <Textarea value={productsPage.hero.subtitle} onChange={(e) => updateField('hero', { ...productsPage.hero, subtitle: e.target.value })} placeholder="Mô tả..." />
-        <ImageUploader currentImage={productsPage.hero.backgroundImage} onImageChange={(url) => updateField('hero', { ...productsPage.hero, backgroundImage: url })} label="Ảnh nền" />
+        <ImageUploader value={productsPage.hero.backgroundImage} onChange={(url) => updateField('hero', { ...productsPage.hero, backgroundImage: url })} label="Ảnh nền" />
       </div>
 
       {/* Categories */}
