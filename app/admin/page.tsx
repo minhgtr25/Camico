@@ -1292,7 +1292,7 @@ function ProductsEditor({
   const updateProduct = (updated: Partial<typeof content.products[0]> & { id: string }) => {
     setContent({
       ...content,
-      products: content.products.map((p) => (p.id === updated.id ? { ...p, ...updated } : p)),
+      products: (content.products || []).map((p) => (p.id === updated.id ? { ...p, ...updated } : p)),
     })
   }
 
@@ -1474,7 +1474,7 @@ function ProductsEditor({
           Danh Sách Sản Phẩm
         </h3>
         <div className="grid gap-4 lg:grid-cols-2">
-        {content.products.map((product) => (
+        {(content.products || []).map((product) => (
           <div key={product.id} className="bg-white p-5 rounded-xl border-l-4 border-emerald-400 shadow-md hover:shadow-lg transition-all">
             <div className="flex items-start justify-between gap-4 mb-3">
               <div className="flex-1">
@@ -1736,7 +1736,7 @@ function NewsEditor({
   const updateArticle = (id: number, patch: Partial<typeof content.news[0]>) => {
     setContent({
       ...content,
-      news: content.news.map((n) => (n.id === id ? { ...n, ...patch } : n)),
+      news: (content.news || []).map((n) => (n.id === id ? { ...n, ...patch } : n)),
     })
   }
 
@@ -1896,7 +1896,7 @@ function NewsEditor({
           Danh Sách Tin Tức
         </h3>
         <div className="grid gap-4 lg:grid-cols-2">
-        {content.news.map((article) => (
+        {(content.news || []).map((article) => (
           <div key={article.id} className="bg-white p-5 rounded-xl border-l-4 border-indigo-400 shadow-md hover:shadow-lg transition-all">
             <div className="flex items-start justify-between gap-4 mb-3">
               <div className="flex-1">
