@@ -91,10 +91,105 @@ export interface ContactForm {
   buttonText: string
 }
 
+export interface ContactPageContent {
+  hero: {
+    title: string
+    subtitle: string
+  }
+  contactCards: {
+    phone: ContactInfo
+    email: ContactInfo
+    address: ContactInfo
+  }
+  mapEmbedUrl: string
+}
+
 export interface Partner {
   id: number
   name: string
   logo: string
+}
+
+export interface PartnerBenefit {
+  id: number
+  icon: string
+  title: string
+  description: string
+}
+
+// About Page Types (Về Chúng Tôi)
+export interface AboutPagePartners {
+  hero: {
+    title: string
+    subtitle: string
+    backgroundImage: string
+  }
+  intro: {
+    title: string
+    subtitle: string
+  }
+  benefits: PartnerBenefit[]
+  cta: {
+    title: string
+    subtitle: string
+    buttonText: string
+  }
+}
+
+export interface AboutPageMission {
+  hero: {
+    backgroundImage: string
+  }
+  companyName: string
+  vision: {
+    title: string
+    content: string
+  }
+  mission: {
+    title: string
+    content: string[]
+  }
+  coreValues: {
+    title: string
+    values: string[]
+  }
+}
+
+export interface AboutPageMessage {
+  hero: {
+    backgroundImage: string
+  }
+  title: string
+  subtitle: string
+  greeting: string
+  paragraphs: string[]
+  quote: string
+  signature: string
+}
+
+// Product List Page Types
+export interface ProductCategory {
+  id: string
+  name: string
+  icon: string
+}
+
+export interface ProductListItem {
+  id: number
+  name: string
+  category: string
+  weight: string
+  description: string
+  icon: string
+}
+
+export interface ProductsPageContent {
+  hero: {
+    title: string
+    subtitle: string
+  }
+  categories: ProductCategory[]
+  productList: ProductListItem[]
 }
 
 // Page Content Types
@@ -117,7 +212,11 @@ export interface AdminContent {
       contactForm: ContactForm
     }
     about: PageContent
-    contact: PageContent
+    contact: ContactPageContent
+    products: ProductsPageContent
+    aboutPartners: AboutPagePartners
+    aboutMission: AboutPageMission
+    aboutMessage: AboutPageMessage
   }
   partners: Partner[]
   products: Product[]

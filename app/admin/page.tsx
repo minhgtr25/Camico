@@ -10,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { ImageUploader } from '@/components/image-uploader'
 import { useToast } from '@/hooks/use-toast'
 
-type TabType = 'hero' | 'contact' | 'products' | 'news' | 'faqs' | 'pages' | 'about' | 'testimonials' | 'gallery' | 'guide'
+type TabType = 'hero' | 'contact' | 'products' | 'news' | 'faqs' | 'pages' | 'about' | 'testimonials' | 'gallery' | 'guide' | 'contactPage' | 'productsPage' | 'aboutPartners' | 'aboutMission' | 'aboutMessage'
 
 export default function AdminPanel() {
   const [adminContent, setAdminContent] = useState<AdminContent>(defaultAdminContent)
@@ -183,6 +183,55 @@ export default function AdminPanel() {
     )
   }
 
+  const [searchQuery, setSearchQuery] = useState('')
+  const [sidebarOpen, setSidebarOpen] = useState(true)
+
+  // Navigation structure with categories
+  const navigationGroups = [
+    {
+      title: '🚀 Bắt đầu',
+      items: [
+        { id: 'guide' as TabType, icon: '📖', label: 'Hướng dẫn', badge: 'Mới' }
+      ]
+    },
+    {
+      title: '🏠 Trang chủ',
+      items: [
+        { id: 'hero' as TabType, icon: '🎯', label: 'Hero Section' },
+        { id: 'about' as TabType, icon: 'ℹ️', label: 'Giới thiệu' },
+        { id: 'products' as TabType, icon: '📦', label: 'Sản phẩm' },
+        { id: 'news' as TabType, icon: '📰', label: 'Tin tức' },
+        { id: 'testimonials' as TabType, icon: '⭐', label: 'Đánh giá' },
+        { id: 'gallery' as TabType, icon: '🖼️', label: 'Thư viện ảnh' },
+        { id: 'contact' as TabType, icon: '📞', label: 'Liên hệ' },
+        { id: 'faqs' as TabType, icon: '❓', label: 'Câu hỏi' },
+      ]
+    },
+    {
+      title: '📄 Trang riêng',
+      items: [
+        { id: 'contactPage' as TabType, icon: '📧', label: 'Trang Liên Hệ' },
+        { id: 'productsPage' as TabType, icon: '🛍️', label: 'Trang Sản Phẩm' },
+      ]
+    },
+    {
+      title: '🏢 Về chúng tôi',
+      items: [
+        { id: 'aboutPartners' as TabType, icon: '🤝', label: 'Đối tác' },
+        { id: 'aboutMission' as TabType, icon: '🎯', label: 'Sứ mệnh' },
+        { id: 'aboutMessage' as TabType, icon: '💬', label: 'Thông điệp' },
+      ]
+    },
+  ]
+
+  // Filter navigation items based on search
+  const filteredGroups = navigationGroups.map(group => ({
+    ...group,
+    items: group.items.filter(item => 
+      item.label.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  })).filter(group => group.items.length > 0)
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Loading Overlay */}
@@ -197,8 +246,16 @@ export default function AdminPanel() {
       
       {/* Header */}
       <header className="bg-gradient-to-r from-[#2d5016] to-[#3d6826] text-white sticky top-0 z-40 shadow-xl border-b-4 border-[#4a7a2e]">
-        <div className="max-w-7xl mx-auto px-4 py-4 md:py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div className="px-4 py-4 md:py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="lg:hidden w-10 h-10 bg-white/10 backdrop-blur-sm rounded-lg flex items-center justify-center hover:bg-white/20 transition-colors"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
             <div className="w-10 h-10 bg-white/10 backdrop-blur-sm rounded-lg flex items-center justify-center">
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
@@ -206,7 +263,7 @@ export default function AdminPanel() {
             </div>
             <div>
               <h1 className="text-xl md:text-2xl font-bold">Admin Panel</h1>
-              <p className="text-xs text-white/70 hidden sm:block">CAMICO</p>
+              <p className="text-xs text-white/70 hidden sm:block">CAMICO Content Management</p>
             </div>
           </div>
           <div className="flex gap-2 w-full sm:w-auto">
@@ -240,53 +297,81 @@ export default function AdminPanel() {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 py-6 md:py-8">
-        {/* Tabs */}
-        <div className="bg-white rounded-xl shadow-md p-2 mb-6 md:mb-8 overflow-hidden">
-          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-            {(['guide', 'hero', 'about', 'testimonials', 'gallery', 'contact', 'products', 'news', 'faqs', 'pages'] as TabType[]).map((tab) => {
-              const tabLabels: Record<TabType, string> = {
-                hero: '🏠 Hero',
-                about: 'ℹ️ Giới thiệu',
-                testimonials: '⭐ Đánh giá',
-                gallery: '🖼️ Thư viện',
-                contact: '📞 Liên hệ',
-                products: '📦 Sản phẩm',
-                news: '📰 Tin tức',
-                faqs: '❓ FAQ',
-                pages: '📄 Trang',
-                guide: '📖 Hướng dẫn',
-              }
-              
-              const isGuide = tab === 'guide'
-              
-              let buttonClasses = ''
-              if (activeTab === tab) {
-                buttonClasses = isGuide 
-                  ? 'bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 text-white shadow-2xl scale-110 ring-2 ring-blue-300 animate-pulse'
-                  : 'bg-gradient-to-r from-[#2d5016] to-[#3d6826] text-white shadow-lg scale-105'
-              } else {
-                buttonClasses = isGuide
-                  ? 'bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700 hover:from-blue-200 hover:to-indigo-200 hover:scale-105 shadow-md border-2 border-blue-300'
-                  : 'bg-gray-50 text-gray-700 hover:bg-gray-100 hover:scale-102'
-              }
-              
-              return (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`px-4 md:px-6 py-2.5 md:py-3 rounded-lg font-semibold whitespace-nowrap transition-all transform ${buttonClasses}`}
-                >
-                  <span className="hidden sm:inline">{tabLabels[tab]}</span>
-                  <span className="sm:hidden">{tabLabels[tab].split(' ')[0]}</span>
-                </button>
-              )
-            })}
+      <div className="flex h-[calc(100vh-88px)]">
+        {/* Sidebar Navigation */}
+        <aside className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:sticky top-[88px] left-0 h-full w-72 bg-white border-r border-gray-200 shadow-xl transition-transform duration-300 z-30 flex flex-col`}>
+          {/* Search */}
+          <div className="p-4 border-b border-gray-200">
+            <div className="relative">
+              <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <Input
+                type="text"
+                placeholder="Tìm kiếm..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 pr-4 py-2 w-full border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2d5016] focus:border-transparent"
+              />
+            </div>
           </div>
-        </div>
+
+          {/* Navigation Groups */}
+          <nav className="flex-1 overflow-y-auto p-4 space-y-6">
+            {filteredGroups.map((group) => (
+              <div key={group.title}>
+                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-3">
+                  {group.title}
+                </h3>
+                <div className="space-y-1">
+                  {group.items.map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        setActiveTab(item.id)
+                        if (window.innerWidth < 1024) setSidebarOpen(false)
+                      }}
+                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition-all ${
+                        activeTab === item.id
+                          ? 'bg-gradient-to-r from-[#2d5016] to-[#3d6826] text-white shadow-lg'
+                          : 'text-gray-700 hover:bg-gray-100'
+                      }`}
+                    >
+                      <span className="text-xl">{item.icon}</span>
+                      <span className="flex-1 text-left">{item.label}</span>
+                      {item.badge && (
+                        <span className="px-2 py-0.5 text-xs font-bold bg-blue-500 text-white rounded-full">
+                          {item.badge}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </nav>
+
+          {/* Sidebar Footer */}
+          <div className="p-4 border-t border-gray-200 bg-gray-50">
+            <div className="text-xs text-gray-500 text-center">
+              <p className="font-semibold">CAMICO Admin v1.0</p>
+              <p className="mt-1">© 2024 All rights reserved</p>
+            </div>
+          </div>
+        </aside>
+
+        {/* Mobile Overlay */}
+        {sidebarOpen && (
+          <div 
+            className="lg:hidden fixed inset-0 bg-black/50 z-20"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
 
         {/* Content Area */}
-        <div className="bg-white rounded-xl shadow-xl p-4 md:p-6 lg:p-8 border border-gray-200">
+        <main className="flex-1 overflow-y-auto">
+          <div className="p-4 md:p-6 lg:p-8">
+            <div className="bg-white rounded-xl shadow-xl p-4 md:p-6 lg:p-8 border border-gray-200">
           {activeTab === 'hero' && (
             <HeroEditor
               content={adminContent}
@@ -379,6 +464,56 @@ export default function AdminPanel() {
             />
           )}
 
+          {activeTab === 'contactPage' && (
+            <ContactPageEditor
+              content={adminContent}
+              setContent={(content) => {
+                setAdminContent(content)
+                setUnsavedChanges(true)
+              }}
+            />
+          )}
+
+          {activeTab === 'aboutPartners' && (
+            <AboutPartnersEditor
+              content={adminContent}
+              setContent={(content) => {
+                setAdminContent(content)
+                setUnsavedChanges(true)
+              }}
+            />
+          )}
+
+          {activeTab === 'aboutMission' && (
+            <AboutMissionEditor
+              content={adminContent}
+              setContent={(content) => {
+                setAdminContent(content)
+                setUnsavedChanges(true)
+              }}
+            />
+          )}
+
+          {activeTab === 'aboutMessage' && (
+            <AboutMessageEditor
+              content={adminContent}
+              setContent={(content) => {
+                setAdminContent(content)
+                setUnsavedChanges(true)
+              }}
+            />
+          )}
+
+          {activeTab === 'productsPage' && (
+            <ProductsPageEditor
+              content={adminContent}
+              setContent={(content) => {
+                setAdminContent(content)
+                setUnsavedChanges(true)
+              }}
+            />
+          )}
+
           {activeTab === 'guide' && <GuideEditor />}
 
           <div className="mt-8 pt-6 border-t border-gray-200">
@@ -399,7 +534,9 @@ export default function AdminPanel() {
               </Button>
             </div>
           </div>
-        </div>
+            </div>
+          </div>
+        </main>
       </div>
     </div>
   )
@@ -2313,6 +2450,537 @@ function PagesEditor({
   )
 }
 
+// Contact Page Editor Component
+function ContactPageEditor({
+  content,
+  setContent,
+}: {
+  content: AdminContent
+  setContent: (content: AdminContent) => void
+}) {
+  const contactPage = content.pages?.contact || {
+    hero: { title: '', subtitle: '' },
+    contactCards: [
+      { icon: 'Phone', title: 'Điện thoại', description: '', value: '' },
+      { icon: 'Mail', title: 'Email', description: '', value: '' },
+      { icon: 'MapPin', title: 'Địa chỉ', description: '', value: '' },
+    ],
+    mapEmbedUrl: '',
+  }
+
+  const updateContactPage = (field: string, value: any) => {
+    setContent({
+      ...content,
+      pages: {
+        ...content.pages,
+        contact: {
+          ...contactPage,
+          [field]: value,
+        },
+      },
+    })
+  }
+
+  const updateContactCard = (index: number, field: string, value: string) => {
+    const updatedCards = [...contactPage.contactCards]
+    updatedCards[index] = { ...updatedCards[index], [field]: value }
+    updateContactPage('contactCards', updatedCards)
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center gap-4 pb-4 border-b-2 border-gray-200">
+        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
+          <span className="text-2xl">📧</span>
+        </div>
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800">Trang Liên Hệ</h2>
+          <p className="text-sm text-gray-500">Chỉnh sửa nội dung trang liên hệ</p>
+        </div>
+      </div>
+
+      {/* Hero Section */}
+      <div className="space-y-4 bg-gradient-to-br from-gray-50 to-blue-50 p-6 rounded-xl border border-gray-200">
+        <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+          <span>🎯</span> Hero Section
+        </h3>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Tiêu đề</label>
+          <Input
+            value={contactPage.hero.title}
+            onChange={(e) => updateContactPage('hero', { ...contactPage.hero, title: e.target.value })}
+            placeholder="Liên Hệ Với Chúng Tôi"
+            className="border-2 focus:border-blue-500"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Phụ đề</label>
+          <Textarea
+            value={contactPage.hero.subtitle}
+            onChange={(e) => updateContactPage('hero', { ...contactPage.hero, subtitle: e.target.value })}
+            placeholder="Chúng tôi luôn sẵn sàng lắng nghe..."
+            className="border-2 focus:border-blue-500 min-h-[80px]"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Ảnh Hero</label>
+          <ImageUploader
+            currentImage={contactPage.hero.image}
+            onImageChange={(url) => updateContactPage('hero', { ...contactPage.hero, image: url })}
+            label="Ảnh Hero"
+          />
+        </div>
+      </div>
+
+      {/* Contact Cards */}
+      <div className="space-y-4 bg-gradient-to-br from-gray-50 to-green-50 p-6 rounded-xl border border-gray-200">
+        <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+          <span>📇</span> Thông Tin Liên Hệ
+        </h3>
+        
+        {contactPage.contactCards.map((card, index) => (
+          <div key={index} className="p-4 bg-white rounded-lg border-2 border-gray-100 space-y-3">
+            <h4 className="font-semibold text-gray-700 flex items-center gap-2">
+              <span className="text-lg">{card.icon === 'Phone' ? '📞' : card.icon === 'Mail' ? '📧' : '📍'}</span>
+              Card {index + 1}: {card.title}
+            </h4>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Tiêu đề</label>
+              <Input
+                value={card.title}
+                onChange={(e) => updateContactCard(index, 'title', e.target.value)}
+                placeholder="Điện thoại / Email / Địa chỉ"
+                className="border-2 focus:border-green-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Mô tả</label>
+              <Input
+                value={card.description}
+                onChange={(e) => updateContactCard(index, 'description', e.target.value)}
+                placeholder="Gọi cho chúng tôi để được tư vấn..."
+                className="border-2 focus:border-green-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Giá trị</label>
+              <Input
+                value={card.value}
+                onChange={(e) => updateContactCard(index, 'value', e.target.value)}
+                placeholder="(+84) 123 456 789 / email@example.com / Địa chỉ..."
+                className="border-2 focus:border-green-500"
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Map Embed */}
+      <div className="space-y-4 bg-gradient-to-br from-gray-50 to-orange-50 p-6 rounded-xl border border-gray-200">
+        <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+          <span>🗺️</span> Google Maps
+        </h3>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Map Embed URL
+            <span className="text-xs text-gray-500 ml-2">(Google Maps → Share → Embed a map)</span>
+          </label>
+          <Textarea
+            value={contactPage.mapEmbedUrl}
+            onChange={(e) => updateContactPage('mapEmbedUrl', e.target.value)}
+            placeholder="https://www.google.com/maps/embed?pb=..."
+            className="border-2 focus:border-orange-500 min-h-[100px] font-mono text-sm"
+          />
+        </div>
+        {contactPage.mapEmbedUrl && (
+          <div className="mt-4">
+            <p className="text-sm text-gray-600 mb-2">Preview:</p>
+            <iframe
+              src={contactPage.mapEmbedUrl}
+              width="100%"
+              height="300"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              className="rounded-lg"
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// About Partners Editor Component
+function AboutPartnersEditor({
+  content,
+  setContent,
+}: {
+  content: AdminContent
+  setContent: (content: AdminContent) => void
+}) {
+  const aboutPartners = content.pages?.aboutPartners || {
+    hero: { title: '', subtitle: '', backgroundImage: '' },
+    intro: { title: '', description: '' },
+    benefits: [],
+    cta: { title: '', description: '', buttonText: '' },
+  }
+
+  const updateField = (path: string, value: any) => {
+    const keys = path.split('.')
+    const updated = { ...aboutPartners }
+    let current: any = updated
+    for (let i = 0; i < keys.length - 1; i++) {
+      current = current[keys[i]]
+    }
+    current[keys[keys.length - 1]] = value
+    setContent({
+      ...content,
+      pages: { ...content.pages, aboutPartners: updated },
+    })
+  }
+
+  const addBenefit = () => {
+    updateField('benefits', [...aboutPartners.benefits, { icon: '🌿', title: '', description: '' }])
+  }
+
+  const removeBenefit = (index: number) => {
+    const newBenefits = aboutPartners.benefits.filter((_, i) => i !== index)
+    updateField('benefits', newBenefits)
+  }
+
+  const updateBenefit = (index: number, field: string, value: string) => {
+    const newBenefits = [...aboutPartners.benefits]
+    newBenefits[index] = { ...newBenefits[index], [field]: value }
+    updateField('benefits', newBenefits)
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center gap-4 pb-4 border-b-2 border-gray-200">
+        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center shadow-lg">
+          <span className="text-2xl">🤝</span>
+        </div>
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800">Trang Đối Tác</h2>
+          <p className="text-sm text-gray-500">Chỉnh sửa thông tin đối tác chiến lược</p>
+        </div>
+      </div>
+
+      {/* Hero */}
+      <div className="space-y-4 bg-gradient-to-br from-gray-50 to-blue-50 p-6 rounded-xl border">
+        <h3 className="font-semibold text-gray-800">🎯 Hero Section</h3>
+        <Input value={aboutPartners.hero.title} onChange={(e) => updateField('hero.title', e.target.value)} placeholder="Đối tác chiến lược" />
+        <Textarea value={aboutPartners.hero.subtitle} onChange={(e) => updateField('hero.subtitle', e.target.value)} placeholder="Cùng phát triển..." />
+        <ImageUploader currentImage={aboutPartners.hero.backgroundImage} onImageChange={(url) => updateField('hero.backgroundImage', url)} label="Ảnh nền Hero" />
+      </div>
+
+      {/* Intro */}
+      <div className="space-y-4 bg-gradient-to-br from-gray-50 to-green-50 p-6 rounded-xl border">
+        <h3 className="font-semibold text-gray-800">📝 Giới thiệu</h3>
+        <Input value={aboutPartners.intro.title} onChange={(e) => updateField('intro.title', e.target.value)} placeholder="Đối tác của chúng tôi" />
+        <Textarea value={aboutPartners.intro.description} onChange={(e) => updateField('intro.description', e.target.value)} placeholder="Mô tả..." />
+      </div>
+
+      {/* Benefits */}
+      <div className="space-y-4 bg-gradient-to-br from-gray-50 to-yellow-50 p-6 rounded-xl border">
+        <div className="flex justify-between items-center">
+          <h3 className="font-semibold text-gray-800">✨ Quyền lợi đối tác</h3>
+          <Button onClick={addBenefit} size="sm" className="bg-green-600 hover:bg-green-700">+ Thêm quyền lợi</Button>
+        </div>
+        {aboutPartners.benefits.map((benefit, i) => (
+          <div key={i} className="p-4 bg-white rounded-lg border-2 space-y-2">
+            <div className="flex justify-between">
+              <h4 className="font-semibold">Quyền lợi {i + 1}</h4>
+              <Button onClick={() => removeBenefit(i)} size="sm" variant="destructive">Xóa</Button>
+            </div>
+            <Input value={benefit.icon} onChange={(e) => updateBenefit(i, 'icon', e.target.value)} placeholder="🌿" />
+            <Input value={benefit.title} onChange={(e) => updateBenefit(i, 'title', e.target.value)} placeholder="Tiêu đề" />
+            <Textarea value={benefit.description} onChange={(e) => updateBenefit(i, 'description', e.target.value)} placeholder="Mô tả..." />
+          </div>
+        ))}
+      </div>
+
+      {/* CTA */}
+      <div className="space-y-4 bg-gradient-to-br from-gray-50 to-orange-50 p-6 rounded-xl border">
+        <h3 className="font-semibold text-gray-800">📢 Call to Action</h3>
+        <Input value={aboutPartners.cta.title} onChange={(e) => updateField('cta.title', e.target.value)} placeholder="Sẵn sàng hợp tác?" />
+        <Textarea value={aboutPartners.cta.description} onChange={(e) => updateField('cta.description', e.target.value)} placeholder="Hãy liên hệ..." />
+        <Input value={aboutPartners.cta.buttonText} onChange={(e) => updateField('cta.buttonText', e.target.value)} placeholder="Liên hệ ngay" />
+      </div>
+    </div>
+  )
+}
+
+// About Mission Editor Component  
+function AboutMissionEditor({ content, setContent }: { content: AdminContent; setContent: (content: AdminContent) => void }) {
+  const aboutMission = content.pages?.aboutMission || {
+    hero: { image: '' },
+    companyName: '',
+    vision: '',
+    mission: { description: '', points: [] },
+    coreValues: [],
+  }
+
+  const updateField = (path: string, value: any) => {
+    const keys = path.split('.')
+    const updated = { ...aboutMission }
+    let current: any = updated
+    for (let i = 0; i < keys.length - 1; i++) {
+      current = current[keys[i]]
+    }
+    current[keys[keys.length - 1]] = value
+    setContent({ ...content, pages: { ...content.pages, aboutMission: updated } })
+  }
+
+  const addMissionPoint = () => updateField('mission.points', [...aboutMission.mission.points, ''])
+  const removeMissionPoint = (i: number) => updateField('mission.points', aboutMission.mission.points.filter((_, idx) => idx !== i))
+  const updateMissionPoint = (i: number, v: string) => {
+    const pts = [...aboutMission.mission.points]
+    pts[i] = v
+    updateField('mission.points', pts)
+  }
+
+  const addCoreValue = () => updateField('coreValues', [...aboutMission.coreValues, ''])
+  const removeCoreValue = (i: number) => updateField('coreValues', aboutMission.coreValues.filter((_, idx) => idx !== i))
+  const updateCoreValue = (i: number, v: string) => {
+    const vals = [...aboutMission.coreValues]
+    vals[i] = v
+    updateField('coreValues', vals)
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center gap-4 pb-4 border-b-2 border-gray-200">
+        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center shadow-lg">
+          <span className="text-2xl">🎯</span>
+        </div>
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800">Trang Sứ Mệnh</h2>
+          <p className="text-sm text-gray-500">Tầm nhìn, Sứ mệnh, Giá trị cốt lõi</p>
+        </div>
+      </div>
+
+      <div className="space-y-4 bg-gradient-to-br from-gray-50 to-blue-50 p-6 rounded-xl border">
+        <h3 className="font-semibold text-gray-800">🖼️ Hero Image</h3>
+        <ImageUploader currentImage={aboutMission.hero.image} onImageChange={(url) => updateField('hero.image', url)} label="Ảnh Hero" />
+      </div>
+
+      <div className="space-y-4 bg-gradient-to-br from-gray-50 to-green-50 p-6 rounded-xl border">
+        <h3 className="font-semibold text-gray-800">🏢 Thông tin công ty</h3>
+        <Input value={aboutMission.companyName} onChange={(e) => updateField('companyName', e.target.value)} placeholder="CÔNG TY CỔ PHẦN CAMICO" />
+      </div>
+
+      <div className="space-y-4 bg-gradient-to-br from-gray-50 to-yellow-50 p-6 rounded-xl border">
+        <h3 className="font-semibold text-gray-800">🔭 Tầm nhìn</h3>
+        <Textarea value={aboutMission.vision} onChange={(e) => updateField('vision', e.target.value)} placeholder="Trở thành thương hiệu dẫn đầu..." className="min-h-[120px]" />
+      </div>
+
+      <div className="space-y-4 bg-gradient-to-br from-gray-50 to-orange-50 p-6 rounded-xl border">
+        <h3 className="font-semibold text-gray-800">🎯 Sứ mệnh</h3>
+        <Textarea value={aboutMission.mission.description} onChange={(e) => updateField('mission.description', e.target.value)} placeholder="Mang đến giải pháp..." className="min-h-[100px]" />
+        <div className="flex justify-between items-center mt-4">
+          <h4 className="font-semibold">Điểm nhấn sứ mệnh:</h4>
+          <Button onClick={addMissionPoint} size="sm" className="bg-orange-600">+ Thêm điểm</Button>
+        </div>
+        {aboutMission.mission.points.map((pt, i) => (
+          <div key={i} className="flex gap-2">
+            <Input value={pt} onChange={(e) => updateMissionPoint(i, e.target.value)} placeholder="Vì sức khỏe..." />
+            <Button onClick={() => removeMissionPoint(i)} size="sm" variant="destructive">Xóa</Button>
+          </div>
+        ))}
+      </div>
+
+      <div className="space-y-4 bg-gradient-to-br from-gray-50 to-purple-50 p-6 rounded-xl border">
+        <div className="flex justify-between items-center">
+          <h3 className="font-semibold text-gray-800">💎 Giá trị cốt lõi</h3>
+          <Button onClick={addCoreValue} size="sm" className="bg-purple-600">+ Thêm giá trị</Button>
+        </div>
+        {aboutMission.coreValues.map((val, i) => (
+          <div key={i} className="flex gap-2">
+            <Input value={val} onChange={(e) => updateCoreValue(i, e.target.value)} placeholder="Trung thực & Trách nhiệm" />
+            <Button onClick={() => removeCoreValue(i)} size="sm" variant="destructive">Xóa</Button>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// About Message Editor Component
+function AboutMessageEditor({ content, setContent }: { content: AdminContent; setContent: (content: AdminContent) => void }) {
+  const aboutMessage = content.pages?.aboutMessage || {
+    hero: { image: '' },
+    title: '',
+    subtitle: '',
+    greeting: '',
+    paragraphs: [],
+    quote: '',
+    signature: '',
+  }
+
+  const updateField = (field: string, value: any) => {
+    setContent({ ...content, pages: { ...content.pages, aboutMessage: { ...aboutMessage, [field]: value } } })
+  }
+
+  const addParagraph = () => updateField('paragraphs', [...aboutMessage.paragraphs, ''])
+  const removeParagraph = (i: number) => updateField('paragraphs', aboutMessage.paragraphs.filter((_, idx) => idx !== i))
+  const updateParagraph = (i: number, v: string) => {
+    const paras = [...aboutMessage.paragraphs]
+    paras[i] = v
+    updateField('paragraphs', paras)
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center gap-4 pb-4 border-b-2 border-gray-200">
+        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center shadow-lg">
+          <span className="text-2xl">💬</span>
+        </div>
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800">Trang Thông Điệp</h2>
+          <p className="text-sm text-gray-500">Thư ngỏ từ nhà sáng lập</p>
+        </div>
+      </div>
+
+      <div className="space-y-4 bg-gradient-to-br from-gray-50 to-blue-50 p-6 rounded-xl border">
+        <h3 className="font-semibold text-gray-800">🖼️ Hero Image</h3>
+        <ImageUploader currentImage={aboutMessage.hero.image} onImageChange={(url) => updateField('hero', { image: url })} label="Ảnh Hero" />
+      </div>
+
+      <div className="space-y-4 bg-gradient-to-br from-gray-50 to-green-50 p-6 rounded-xl border">
+        <h3 className="font-semibold text-gray-800">📝 Tiêu đề</h3>
+        <Input value={aboutMessage.title} onChange={(e) => updateField('title', e.target.value)} placeholder="THƯ NGỞ" />
+        <Input value={aboutMessage.subtitle} onChange={(e) => updateField('subtitle', e.target.value)} placeholder="Thông điệp nhà sáng lập" />
+      </div>
+
+      <div className="space-y-4 bg-gradient-to-br from-gray-50 to-yellow-50 p-6 rounded-xl border">
+        <h3 className="font-semibold text-gray-800">👋 Lời chào</h3>
+        <Input value={aboutMessage.greeting} onChange={(e) => updateField('greeting', e.target.value)} placeholder="Kính gửi: Quý khách hàng..." />
+      </div>
+
+      <div className="space-y-4 bg-gradient-to-br from-gray-50 to-orange-50 p-6 rounded-xl border">
+        <div className="flex justify-between items-center">
+          <h3 className="font-semibold text-gray-800">📄 Nội dung thư</h3>
+          <Button onClick={addParagraph} size="sm" className="bg-orange-600">+ Thêm đoạn</Button>
+        </div>
+        {aboutMessage.paragraphs.map((para, i) => (
+          <div key={i} className="space-y-2">
+            <div className="flex justify-between">
+              <label className="text-sm font-medium">Đoạn {i + 1}</label>
+              <Button onClick={() => removeParagraph(i)} size="sm" variant="destructive">Xóa</Button>
+            </div>
+            <Textarea value={para} onChange={(e) => updateParagraph(i, e.target.value)} placeholder="Nội dung đoạn văn..." className="min-h-[100px]" />
+          </div>
+        ))}
+      </div>
+
+      <div className="space-y-4 bg-gradient-to-br from-gray-50 to-purple-50 p-6 rounded-xl border">
+        <h3 className="font-semibold text-gray-800">💭 Quote nổi bật</h3>
+        <Textarea value={aboutMessage.quote} onChange={(e) => updateField('quote', e.target.value)} placeholder="Biến phụ phẩm thành giá trị..." className="min-h-[80px]" />
+      </div>
+
+      <div className="space-y-4 bg-gradient-to-br from-gray-50 to-pink-50 p-6 rounded-xl border">
+        <h3 className="font-semibold text-gray-800">✍️ Chữ ký</h3>
+        <Input value={aboutMessage.signature} onChange={(e) => updateField('signature', e.target.value)} placeholder="CAMICO" />
+      </div>
+    </div>
+  )
+}
+
+// Products Page Editor Component
+function ProductsPageEditor({ content, setContent }: { content: AdminContent; setContent: (content: AdminContent) => void }) {
+  const productsPage = content.pages?.products || {
+    hero: { title: '', subtitle: '', backgroundImage: '' },
+    categories: [],
+    productList: [],
+  }
+
+  const updateField = (field: string, value: any) => {
+    setContent({ ...content, pages: { ...content.pages, products: { ...productsPage, [field]: value } } })
+  }
+
+  const addCategory = () => updateField('categories', [...productsPage.categories, { id: '', name: '', icon: '📦' }])
+  const removeCategory = (i: number) => updateField('categories', productsPage.categories.filter((_, idx) => idx !== i))
+  const updateCategory = (i: number, field: string, v: string) => {
+    const cats = [...productsPage.categories]
+    cats[i] = { ...cats[i], [field]: v }
+    updateField('categories', cats)
+  }
+
+  const addProduct = () => updateField('productList', [...productsPage.productList, { id: Date.now(), name: '', category: '', weight: '', description: '', icon: '📦' }])
+  const removeProduct = (i: number) => updateField('productList', productsPage.productList.filter((_, idx) => idx !== i))
+  const updateProduct = (i: number, field: string, v: any) => {
+    const prods = [...productsPage.productList]
+    prods[i] = { ...prods[i], [field]: v }
+    updateField('productList', prods)
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center gap-4 pb-4 border-b-2 border-gray-200">
+        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center shadow-lg">
+          <span className="text-2xl">🛍️</span>
+        </div>
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800">Trang Sản Phẩm</h2>
+          <p className="text-sm text-gray-500">Quản lý danh mục và sản phẩm</p>
+        </div>
+      </div>
+
+      {/* Hero */}
+      <div className="space-y-4 bg-gradient-to-br from-gray-50 to-blue-50 p-6 rounded-xl border">
+        <h3 className="font-semibold text-gray-800">🎯 Hero Section</h3>
+        <Input value={productsPage.hero.title} onChange={(e) => updateField('hero', { ...productsPage.hero, title: e.target.value })} placeholder="SẢN PHẨM CỦA CAMICO" />
+        <Textarea value={productsPage.hero.subtitle} onChange={(e) => updateField('hero', { ...productsPage.hero, subtitle: e.target.value })} placeholder="Mô tả..." />
+        <ImageUploader currentImage={productsPage.hero.backgroundImage} onImageChange={(url) => updateField('hero', { ...productsPage.hero, backgroundImage: url })} label="Ảnh nền" />
+      </div>
+
+      {/* Categories */}
+      <div className="space-y-4 bg-gradient-to-br from-gray-50 to-green-50 p-6 rounded-xl border">
+        <div className="flex justify-between items-center">
+          <h3 className="font-semibold text-gray-800">📂 Danh mục sản phẩm</h3>
+          <Button onClick={addCategory} size="sm" className="bg-green-600">+ Thêm danh mục</Button>
+        </div>
+        {productsPage.categories.map((cat, i) => (
+          <div key={i} className="p-4 bg-white rounded-lg border-2 space-y-2">
+            <div className="flex justify-between">
+              <h4 className="font-semibold">Danh mục {i + 1}</h4>
+              <Button onClick={() => removeCategory(i)} size="sm" variant="destructive">Xóa</Button>
+            </div>
+            <Input value={cat.id} onChange={(e) => updateCategory(i, 'id', e.target.value)} placeholder="heo-thit" />
+            <Input value={cat.name} onChange={(e) => updateCategory(i, 'name', e.target.value)} placeholder="Thức ăn cho heo" />
+            <Input value={cat.icon} onChange={(e) => updateCategory(i, 'icon', e.target.value)} placeholder="🐷" />
+          </div>
+        ))}
+      </div>
+
+      {/* Products */}
+      <div className="space-y-4 bg-gradient-to-br from-gray-50 to-orange-50 p-6 rounded-xl border">
+        <div className="flex justify-between items-center">
+          <h3 className="font-semibold text-gray-800">📦 Danh sách sản phẩm</h3>
+          <Button onClick={addProduct} size="sm" className="bg-orange-600">+ Thêm sản phẩm</Button>
+        </div>
+        {productsPage.productList.map((prod, i) => (
+          <div key={i} className="p-4 bg-white rounded-lg border-2 space-y-2">
+            <div className="flex justify-between">
+              <h4 className="font-semibold">Sản phẩm {i + 1}</h4>
+              <Button onClick={() => removeProduct(i)} size="sm" variant="destructive">Xóa</Button>
+            </div>
+            <Input value={prod.name} onChange={(e) => updateProduct(i, 'name', e.target.value)} placeholder="Tên sản phẩm" />
+            <Input value={prod.category} onChange={(e) => updateProduct(i, 'category', e.target.value)} placeholder="heo-thit / ga" />
+            <Input value={prod.weight} onChange={(e) => updateProduct(i, 'weight', e.target.value)} placeholder="25kg" />
+            <Input value={prod.icon} onChange={(e) => updateProduct(i, 'icon', e.target.value)} placeholder="🐷" />
+            <Textarea value={prod.description} onChange={(e) => updateProduct(i, 'description', e.target.value)} placeholder="Mô tả sản phẩm..." className="min-h-[80px]" />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // Guide Editor Component
 function GuideEditor() {
   return (
@@ -2324,292 +2992,393 @@ function GuideEditor() {
         </div>
         <div>
           <h2 className="text-2xl font-bold text-gray-800">Hướng Dẫn Sử Dụng Admin Panel</h2>
-          <p className="text-sm text-gray-500">Tài liệu hướng dẫn chi tiết</p>
+          <p className="text-sm text-gray-500">Quản lý toàn bộ nội dung website CAMICO</p>
         </div>
       </div>
 
-      {/* Introduction */}
-      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl border-l-4 border-blue-400 shadow-sm">
+      {/* Quick Start */}
+      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl border-l-4 border-blue-500 shadow-md">
         <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
-          <span>👋</span>{' '}
-          Chào mừng
+          <span>🚀</span> Bắt Đầu Nhanh
         </h3>
-        <p className="text-gray-700 leading-relaxed">
-          Admin Panel cho phép bạn quản lý toàn bộ nội dung website CAMICO một cách dễ dàng. 
-          Bạn có thể chỉnh sửa văn bản, hình ảnh, sản phẩm, tin tức và nhiều hơn nữa mà không cần kiến thức lập trình.
-        </p>
+        <div className="space-y-3 text-gray-700">
+          <p className="leading-relaxed">
+            Chào mừng đến với Admin Panel của CAMICO! Bạn có thể quản lý toàn bộ nội dung website 
+            mà không cần kiến thức lập trình. Mọi thay đổi sẽ được lưu trên <strong>Vercel KV</strong> 
+            và hiển thị ngay lập tức trên website.
+          </p>
+          <div className="bg-white p-4 rounded-lg border border-blue-200 mt-3">
+            <h4 className="font-semibold text-gray-800 mb-2">3 Bước Đơn Giản:</h4>
+            <ol className="list-decimal list-inside space-y-1.5 text-sm">
+              <li>Chọn trang cần chỉnh sửa từ <strong>menu bên trái</strong></li>
+              <li>Cập nhật nội dung: văn bản, hình ảnh, danh sách...</li>
+              <li>Nhấn nút <strong className="text-green-600">💾 Lưu Thay Đổi</strong> ở header</li>
+            </ol>
+          </div>
+        </div>
       </div>
 
-      {/* Main Features */}
+      {/* Navigation Guide */}
       <div className="bg-white p-6 rounded-xl border-2 border-gray-200 shadow-sm">
         <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-          <span>⚙️</span>{' '}
-          Các Chức Năng Chính
+          <span>🧭</span> Điều Hướng & Tìm Kiếm
         </h3>
         <div className="space-y-4">
           <div className="flex gap-3">
-            <div className="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-              <span>🏠</span>
+            <div className="flex-shrink-0 w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+              <span className="text-xl">📱</span>
             </div>
             <div>
-              <h4 className="font-semibold text-gray-800">Hero Section</h4>
-              <p className="text-sm text-gray-600">Chỉnh sửa banner chính của trang chủ, bao gồm tiêu đề, mô tả và hình ảnh nền.</p>
+              <h4 className="font-semibold text-gray-800">Menu Sidebar</h4>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Tất cả các trang được tổ chức thành 4 nhóm: <strong>Bắt đầu</strong> (hướng dẫn), 
+                <strong>Trang chủ</strong> (hero, giới thiệu, sản phẩm...), <strong>Trang riêng</strong> 
+                (Liên hệ, Sản phẩm), và <strong>Về chúng tôi</strong> (Đối tác, Sứ mệnh, Thông điệp).
+              </p>
             </div>
           </div>
 
           <div className="flex gap-3">
-            <div className="flex-shrink-0 w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-              <span>ℹ️</span>
+            <div className="flex-shrink-0 w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+              <span className="text-xl">🔍</span>
             </div>
             <div>
-              <h4 className="font-semibold text-gray-800">Giới Thiệu</h4>
-              <p className="text-sm text-gray-600">Quản lý nội dung giới thiệu về công ty, sứ mệnh và thông điệp.</p>
+              <h4 className="font-semibold text-gray-800">Tìm Kiếm Nhanh</h4>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Gõ từ khóa vào ô tìm kiếm ở đầu sidebar để lọc nhanh trang cần edit. 
+                Ví dụ: gõ "sản phẩm" sẽ hiện cả "Sản phẩm (Home)" và "Trang Sản Phẩm".
+              </p>
             </div>
           </div>
 
           <div className="flex gap-3">
-            <div className="flex-shrink-0 w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
-              <span>⭐</span>
+            <div className="flex-shrink-0 w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+              <span className="text-xl">☰</span>
             </div>
             <div>
-              <h4 className="font-semibold text-gray-800">Đánh Giá</h4>
-              <p className="text-sm text-gray-600">Thêm, chỉnh sửa và xoá các đánh giá của khách hàng. Bạn có thể click "Chỉnh sửa" để sửa đổi đánh giá đã có.</p>
-            </div>
-          </div>
-
-          <div className="flex gap-3">
-            <div className="flex-shrink-0 w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-              <span>🖼️</span>
-            </div>
-            <div>
-              <h4 className="font-semibold text-gray-800">Thư Viện</h4>
-              <p className="text-sm text-gray-600">Quản lý các slide hình ảnh hiển thị trên trang chủ.</p>
-            </div>
-          </div>
-
-          <div className="flex gap-3">
-            <div className="flex-shrink-0 w-8 h-8 bg-cyan-100 rounded-lg flex items-center justify-center">
-              <span>📞</span>
-            </div>
-            <div>
-              <h4 className="font-semibold text-gray-800">Liên Hệ</h4>
-              <p className="text-sm text-gray-600">Cập nhật thông tin liên hệ: số điện thoại, email, địa chỉ và quốc gia.</p>
-            </div>
-          </div>
-
-          <div className="flex gap-3">
-            <div className="flex-shrink-0 w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
-              <span>📦</span>
-            </div>
-            <div>
-              <h4 className="font-semibold text-gray-800">Sản Phẩm</h4>
-              <p className="text-sm text-gray-600">Thêm mới, chỉnh sửa sản phẩm. Mỗi sản phẩm có thể có lợi ích và FAQ riêng.</p>
-            </div>
-          </div>
-
-          <div className="flex gap-3">
-            <div className="flex-shrink-0 w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
-              <span>📰</span>
-            </div>
-            <div>
-              <h4 className="font-semibold text-gray-800">Tin Tức</h4>
-              <p className="text-sm text-gray-600">Tạo và quản lý bài viết tin tức. Hỗ trợ HTML và nhiều bố cục khác nhau. Có nút "Xem trước" để kiểm tra trước khi lưu.</p>
-            </div>
-          </div>
-
-          <div className="flex gap-3">
-            <div className="flex-shrink-0 w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center">
-              <span>❓</span>
-            </div>
-            <div>
-              <h4 className="font-semibold text-gray-800">FAQ</h4>
-              <p className="text-sm text-gray-600">Quản lý câu hỏi thường gặp theo từng sản phẩm.</p>
-            </div>
-          </div>
-
-          <div className="flex gap-3">
-            <div className="flex-shrink-0 w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center">
-              <span>📄</span>
-            </div>
-            <div>
-              <h4 className="font-semibold text-gray-800">Trang</h4>
-              <p className="text-sm text-gray-600">Chỉnh sửa nội dung của các trang khác nhau (Trang Chủ, Về Chúng Tôi).</p>
+              <h4 className="font-semibold text-gray-800">Mobile Menu</h4>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Trên mobile/tablet, nhấn nút <strong>☰</strong> ở góc trên trái để mở/đóng sidebar. 
+                Sidebar sẽ tự động đóng sau khi bạn chọn một trang.
+              </p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Important Buttons */}
-      <div className="bg-gradient-to-br from-orange-50 to-red-50 p-6 rounded-xl border-l-4 border-orange-400 shadow-sm">
+      {/* Page Categories */}
+      <div className="grid md:grid-cols-2 gap-4">
+        {/* Home Pages */}
+        <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-5 rounded-xl border border-orange-200 shadow-sm">
+          <h3 className="text-base font-semibold text-gray-800 mb-3 flex items-center gap-2">
+            <span>🏠</span> Trang Chủ
+          </h3>
+          <div className="space-y-2 text-sm text-gray-700">
+            <div className="flex items-start gap-2">
+              <span>🎯</span>
+              <div><strong>Hero:</strong> Banner chính với tiêu đề, phụ đề, nút CTA</div>
+            </div>
+            <div className="flex items-start gap-2">
+              <span>ℹ️</span>
+              <div><strong>Giới thiệu:</strong> Thông tin về công ty</div>
+            </div>
+            <div className="flex items-start gap-2">
+              <span>📦</span>
+              <div><strong>Sản phẩm:</strong> Danh sách sản phẩm nổi bật trên trang chủ</div>
+            </div>
+            <div className="flex items-start gap-2">
+              <span>📰</span>
+              <div><strong>Tin tức:</strong> Quản lý bài viết, featured article</div>
+            </div>
+            <div className="flex items-start gap-2">
+              <span>⭐</span>
+              <div><strong>Đánh giá:</strong> Testimonials từ khách hàng</div>
+            </div>
+            <div className="flex items-start gap-2">
+              <span>🖼️</span>
+              <div><strong>Thư viện:</strong> Gallery slider ảnh</div>
+            </div>
+            <div className="flex items-start gap-2">
+              <span>📞</span>
+              <div><strong>Liên hệ:</strong> Thông tin liên hệ ngắn gọn</div>
+            </div>
+            <div className="flex items-start gap-2">
+              <span>❓</span>
+              <div><strong>FAQ:</strong> Câu hỏi thường gặp theo sản phẩm</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Dedicated Pages */}
+        <div className="bg-gradient-to-br from-green-50 to-teal-50 p-5 rounded-xl border border-green-200 shadow-sm">
+          <h3 className="text-base font-semibold text-gray-800 mb-3 flex items-center gap-2">
+            <span>📄</span> Trang Riêng & Về Chúng Tôi
+          </h3>
+          <div className="space-y-2 text-sm text-gray-700">
+            <div className="flex items-start gap-2">
+              <span>📧</span>
+              <div><strong>Trang Liên Hệ:</strong> Hero, 3 contact cards, map embed</div>
+            </div>
+            <div className="flex items-start gap-2">
+              <span>🛍️</span>
+              <div><strong>Trang Sản Phẩm:</strong> Hero, categories, product list với CRUD</div>
+            </div>
+            <div className="flex items-start gap-2">
+              <span>🤝</span>
+              <div><strong>Đối tác:</strong> Hero, intro, danh sách benefits, CTA</div>
+            </div>
+            <div className="flex items-start gap-2">
+              <span>🎯</span>
+              <div><strong>Sứ mệnh:</strong> Vision, mission points, core values</div>
+            </div>
+            <div className="flex items-start gap-2">
+              <span>💬</span>
+              <div><strong>Thông điệp:</strong> Greeting, paragraphs, quote, signature</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Action Buttons Guide */}
+      <div className="bg-gradient-to-br from-red-50 to-orange-50 p-6 rounded-xl border-l-4 border-red-400 shadow-md">
         <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-          <span>🔘</span>{' '}
-          Các Nút Quan Trọng
+          <span>🔘</span> Các Nút Quan Trọng
         </h3>
-        <div className="space-y-4">
-          <div className="bg-white p-4 rounded-lg border border-gray-200">
-            <div className="flex items-center gap-3 mb-2">
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div className="bg-white p-4 rounded-lg border-2 border-green-200">
+            <div className="flex items-center gap-2 mb-2">
               <span className="text-2xl">💾</span>
-              <h4 className="font-semibold text-gray-800">Nút Lưu (Save)</h4>
+              <h4 className="font-semibold text-green-700">Lưu Thay Đổi</h4>
             </div>
-            <p className="text-sm text-gray-600 mb-2">
-              - Lưu tất cả thay đổi vào trình duyệt (localStorage)
-            </p>
-            <p className="text-sm text-gray-600 mb-2">
-              - Nút sẽ sáng màu vàng và nhấp nháy khi có thay đổi chưa lưu
-            </p>
-            <p className="text-sm text-gray-600">
-              - <strong>Lưu ý:</strong> Dữ liệu chỉ lưu trên trình duyệt hiện tại. Nếu xoá cache hoặc dùng trình duyệt khác sẽ không thấy thay đổi.
-            </p>
+            <ul className="text-sm text-gray-600 space-y-1">
+              <li>• Lưu lên <strong>Vercel KV</strong> (database cloud)</li>
+              <li>• Thay đổi hiển thị <strong>ngay lập tức</strong> trên website</li>
+              <li>• Nút sẽ <strong className="text-yellow-600">nhấp nháy màu vàng</strong> khi có thay đổi chưa lưu</li>
+              <li>• Có ở cả header và footer của content area</li>
+            </ul>
           </div>
 
-          <div className="bg-white p-4 rounded-lg border border-gray-200">
-            <div className="flex items-center gap-3 mb-2">
+          <div className="bg-white p-4 rounded-lg border-2 border-orange-200">
+            <div className="flex items-center gap-2 mb-2">
               <span className="text-2xl">🔄</span>
-              <h4 className="font-semibold text-gray-800">Nút Reset / Khôi Phục</h4>
+              <h4 className="font-semibold text-orange-700">Reset / Khôi Phục</h4>
             </div>
-            <p className="text-sm text-gray-600 mb-2">
-              - Đặt lại toàn bộ nội dung về mặc định ban đầu
-            </p>
-            <p className="text-sm text-gray-600 mb-2">
-              - Sẽ xoá tất cả các thay đổi bạn đã thực hiện
-            </p>
-            <p className="text-sm text-red-600 font-semibold">
-              ⚠️ Cảnh báo: Hành động này không thể hoàn tác! Sẽ có hộp thoại xác nhận trước khi thực hiện.
-            </p>
+            <ul className="text-sm text-gray-600 space-y-1">
+              <li>• Đặt lại toàn bộ về <strong>nội dung mặc định</strong></li>
+              <li>• Xóa mọi thay đổi đã lưu trên Vercel KV</li>
+              <li>• <strong className="text-red-600">⚠️ KHÔNG thể hoàn tác!</strong></li>
+              <li>• Sẽ có hộp thoại xác nhận trước khi reset</li>
+            </ul>
           </div>
 
-          <div className="bg-white p-4 rounded-lg border border-gray-200">
-            <div className="flex items-center gap-3 mb-2">
-              <span className="text-2xl">✏️</span>
-              <h4 className="font-semibold text-gray-800">Nút Chỉnh Sửa</h4>
+          <div className="bg-white p-4 rounded-lg border-2 border-blue-200">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-2xl">➕</span>
+              <h4 className="font-semibold text-blue-700">Thêm Mới (Add)</h4>
             </div>
-            <p className="text-sm text-gray-600 mb-2">
-              - Mở form chỉnh sửa cho mục đã có (trong Đánh giá, Sản phẩm, Tin tức, v.v.)
-            </p>
-            <p className="text-sm text-gray-600">
-              - Click lại để thu gọn form
-            </p>
+            <ul className="text-sm text-gray-600 space-y-1">
+              <li>• Thêm item mới vào danh sách (sản phẩm, tin tức, benefits...)</li>
+              <li>• Form sẽ mở ra để bạn điền thông tin</li>
+              <li>• Nhớ điền đầy đủ các trường bắt buộc</li>
+            </ul>
           </div>
 
-          <div className="bg-white p-4 rounded-lg border border-gray-200">
-            <div className="flex items-center gap-3 mb-2">
+          <div className="bg-white p-4 rounded-lg border-2 border-gray-200">
+            <div className="flex items-center gap-2 mb-2">
               <span className="text-2xl">🗑️</span>
-              <h4 className="font-semibold text-gray-800">Nút Xoá</h4>
+              <h4 className="font-semibold text-gray-700">Xóa (Delete)</h4>
             </div>
-            <p className="text-sm text-gray-600 mb-2">
-              - Xoá mục khỏi danh sách
-            </p>
-            <p className="text-sm text-yellow-600">
-              ⚠️ Nhớ nhấn "Lưu" sau khi xoá để thay đổi được lưu lại.
-            </p>
+            <ul className="text-sm text-gray-600 space-y-1">
+              <li>• Xóa item khỏi danh sách</li>
+              <li>• Thay đổi chưa lưu cho đến khi nhấn "💾 Lưu"</li>
+              <li>• Có thể undo bằng cách refresh trang (nếu chưa lưu)</li>
+            </ul>
           </div>
         </div>
       </div>
 
       {/* Image Upload */}
-      <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-xl border-l-4 border-purple-400 shadow-sm">
+      <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-xl border-l-4 border-purple-400 shadow-md">
         <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-          <span>🖼️</span>{' '}
-          Upload Hình Ảnh
+          <span>📸</span> Upload & Quản Lý Hình Ảnh
+        </h3>
+        <div className="space-y-4">
+          <div className="bg-white p-4 rounded-lg border border-purple-200">
+            <h4 className="font-semibold text-gray-800 mb-2">Cách upload hình ảnh:</h4>
+            <ol className="list-decimal list-inside space-y-2 text-sm text-gray-600">
+              <li>Tìm ô "Chọn hoặc kéo thả hình ảnh" (dashed border)</li>
+              <li>Click vào ô hoặc kéo thả file trực tiếp</li>
+              <li>Chọn file ảnh: JPG, PNG, GIF, WebP (max 4.5MB)</li>
+              <li>Hình sẽ tự động upload lên <strong>Cloudinary</strong></li>
+              <li>URL ảnh sẽ được điền tự động vào input field</li>
+            </ol>
+          </div>
+
+          <div className="bg-white p-4 rounded-lg border border-purple-200">
+            <h4 className="font-semibold text-gray-800 mb-2">💡 Tips upload ảnh:</h4>
+            <ul className="space-y-1.5 text-sm text-gray-600">
+              <li className="flex gap-2">
+                <span>✓</span>
+                <span><strong>Kích thước:</strong> Nên dùng ảnh dưới 2MB để website load nhanh</span>
+              </li>
+              <li className="flex gap-2">
+                <span>✓</span>
+                <span><strong>Độ phân giải:</strong> Hero images: 1920x1080, Product icons: 500x500</span>
+              </li>
+              <li className="flex gap-2">
+                <span>✓</span>
+                <span><strong>Format:</strong> WebP tối ưu nhất, PNG cho ảnh có nền trong suốt</span>
+              </li>
+              <li className="flex gap-2">
+                <span>✓</span>
+                <span><strong>Paste URL:</strong> Bạn cũng có thể paste link ảnh từ nguồn khác</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {/* CRUD Operations */}
+      <div className="bg-gradient-to-br from-cyan-50 to-blue-50 p-6 rounded-xl border-l-4 border-cyan-400 shadow-md">
+        <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+          <span>⚙️</span> CRUD Operations (Thêm/Sửa/Xóa)
         </h3>
         <div className="space-y-3">
           <p className="text-gray-700">
-            <strong>Cách upload hình ảnh:</strong>
+            Các trang có danh sách (Products, News, Benefits, Paragraphs...) đều hỗ trợ CRUD đầy đủ:
           </p>
-          <ol className="list-decimal list-inside space-y-2 text-sm text-gray-600 ml-2">
-            <li>Click vào ô "Chọn hoặc kéo thả hình ảnh"</li>
-            <li>Chọn file hình ảnh từ máy tính (JPG, PNG, GIF, WebP)</li>
-            <li>Hình sẽ tự động upload lên Vercel Blob Storage</li>
-            <li>URL hình ảnh sẽ được điền vào ô input</li>
-            <li>Bạn cũng có thể paste trực tiếp URL hình ảnh từ nguồn khác</li>
-          </ol>
-          <div className="bg-white p-3 rounded-lg border border-purple-200 mt-3">
-            <p className="text-sm text-gray-600">
-              💡 <strong>Mẹo:</strong> Nên dùng hình ảnh có kích thước phù hợp để website load nhanh hơn. 
-              Kích thước khuyến nghị: dưới 2MB, độ phân giải 1920x1080 hoặc nhỏ hơn.
-            </p>
+          <div className="grid sm:grid-cols-2 gap-3">
+            <div className="bg-white p-3 rounded-lg border border-cyan-200">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-lg">➕</span>
+                <strong className="text-sm">Create (Tạo mới)</strong>
+              </div>
+              <p className="text-xs text-gray-600">Nhấn nút "Thêm..." để tạo item mới. Form sẽ mở ra với các field trống.</p>
+            </div>
+            <div className="bg-white p-3 rounded-lg border border-cyan-200">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-lg">👁️</span>
+                <strong className="text-sm">Read (Xem)</strong>
+              </div>
+              <p className="text-xs text-gray-600">Tất cả items được hiển thị dạng danh sách/card với thông tin đầy đủ.</p>
+            </div>
+            <div className="bg-white p-3 rounded-lg border border-cyan-200">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-lg">✏️</span>
+                <strong className="text-sm">Update (Cập nhật)</strong>
+              </div>
+              <p className="text-xs text-gray-600">Thay đổi trực tiếp trong input fields hoặc dùng nút "Edit" để mở form.</p>
+            </div>
+            <div className="bg-white p-3 rounded-lg border border-cyan-200">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-lg">🗑️</span>
+                <strong className="text-sm">Delete (Xóa)</strong>
+              </div>
+              <p className="text-xs text-gray-600">Nhấn nút "Xóa" màu đỏ. Thay đổi áp dụng sau khi "Lưu".</p>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Tips & Best Practices */}
-      <div className="bg-gradient-to-br from-green-50 to-teal-50 p-6 rounded-xl border-l-4 border-green-400 shadow-sm">
+      {/* Best Practices */}
+      <div className="bg-gradient-to-br from-emerald-50 to-green-50 p-6 rounded-xl border-l-4 border-emerald-400 shadow-md">
         <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-          <span>💡</span>{' '}
-          Mẹo & Lưu Ý
+          <span>⭐</span> Best Practices & Tips
         </h3>
-        <div className="space-y-3">
-          <div className="flex gap-3">
-            <span className="text-green-600 flex-shrink-0">✓</span>
-            <p className="text-sm text-gray-700">
-              <strong>Lưu thường xuyên:</strong> Nhấn nút "Lưu" sau mỗi lần chỉnh sửa quan trọng để tránh mất dữ liệu.
-            </p>
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div className="space-y-3">
+            <div className="flex gap-3">
+              <span className="text-green-600 text-xl flex-shrink-0">✓</span>
+              <div>
+                <h4 className="font-semibold text-sm text-gray-800">Lưu thường xuyên</h4>
+                <p className="text-xs text-gray-600">Nhấn "Lưu" sau mỗi thay đổi quan trọng để tránh mất dữ liệu</p>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <span className="text-green-600 text-xl flex-shrink-0">✓</span>
+              <div>
+                <h4 className="font-semibold text-sm text-gray-800">Kiểm tra responsive</h4>
+                <p className="text-xs text-gray-600">Test trên nhiều thiết bị (mobile/tablet/desktop) sau khi update</p>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <span className="text-green-600 text-xl flex-shrink-0">✓</span>
+              <div>
+                <h4 className="font-semibold text-sm text-gray-800">Toast notifications</h4>
+                <p className="text-xs text-gray-600">Chú ý thông báo ở góc trên phải để biết trạng thái lưu/xóa</p>
+              </div>
+            </div>
           </div>
-          <div className="flex gap-3">
-            <span className="text-green-600 flex-shrink-0">✓</span>
-            <p className="text-sm text-gray-700">
-              <strong>Kiểm tra trước khi lưu:</strong> Với tin tức, dùng nút "Xem trước" để kiểm tra bố cục trước khi lưu.
-            </p>
-          </div>
-          <div className="flex gap-3">
-            <span className="text-green-600 flex-shrink-0">✓</span>
-            <p className="text-sm text-gray-700">
-              <strong>Responsive:</strong> Giao diện admin được tối ưu cho cả desktop, tablet và mobile.
-            </p>
-          </div>
-          <div className="flex gap-3">
-            <span className="text-green-600 flex-shrink-0">✓</span>
-            <p className="text-sm text-gray-700">
-              <strong>Toast notifications:</strong> Mỗi hành động sẽ có thông báo xác nhận ở góc trên bên phải.
-            </p>
-          </div>
-          <div className="flex gap-3">
-            <span className="text-yellow-600 flex-shrink-0">⚠️</span>
-            <p className="text-sm text-gray-700">
-              <strong>Dữ liệu local:</strong> Tất cả thay đổi chỉ lưu trên trình duyệt hiện tại. Không đồng bộ giữa các thiết bị.
-            </p>
-          </div>
-          <div className="flex gap-3">
-            <span className="text-yellow-600 flex-shrink-0">⚠️</span>
-            <p className="text-sm text-gray-700">
-              <strong>Backup:</strong> Nếu cần backup, hãy sao chép localStorage hoặc export dữ liệu thủ công.
-            </p>
+          <div className="space-y-3">
+            <div className="flex gap-3">
+              <span className="text-green-600 text-xl flex-shrink-0">✓</span>
+              <div>
+                <h4 className="font-semibold text-sm text-gray-800">Preview changes</h4>
+                <p className="text-xs text-gray-600">Mở website ở tab khác để xem thay đổi real-time</p>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <span className="text-green-600 text-xl flex-shrink-0">✓</span>
+              <div>
+                <h4 className="font-semibold text-sm text-gray-800">Backup quan trọng</h4>
+                <p className="text-xs text-gray-600">Trước khi Reset, hãy chắc chắn đã backup nội dung quan trọng</p>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <span className="text-green-600 text-xl flex-shrink-0">✓</span>
+              <div>
+                <h4 className="font-semibold text-sm text-gray-800">SEO friendly</h4>
+                <p className="text-xs text-gray-600">Điền đầy đủ title, description, alt text cho ảnh</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Security Note */}
-      <div className="bg-gradient-to-br from-red-50 to-orange-50 p-6 rounded-xl border-l-4 border-red-400 shadow-sm">
+      {/* Technical Info */}
+      <div className="bg-gradient-to-br from-slate-50 to-gray-100 p-6 rounded-xl border border-slate-300 shadow-sm">
         <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-          <span>🔒</span>{' '}
-          Bảo Mật
+          <span>🔧</span> Thông Tin Kỹ Thuật
         </h3>
-        <div className="space-y-3">
+        <div className="grid sm:grid-cols-2 gap-4 text-sm text-gray-700">
+          <div className="bg-white p-3 rounded-lg border border-gray-200">
+            <strong>💾 Storage:</strong> Vercel KV (Upstash Redis) - Lưu trữ cloud an toàn
+          </div>
+          <div className="bg-white p-3 rounded-lg border border-gray-200">
+            <strong>📸 Images:</strong> Cloudinary (dahjyasbm) - CDN nhanh, tối ưu tự động
+          </div>
+          <div className="bg-white p-3 rounded-lg border border-gray-200">
+            <strong>⚡ Rendering:</strong> Server-side với force-dynamic - SEO tốt nhất
+          </div>
+          <div className="bg-white p-3 rounded-lg border border-gray-200">
+            <strong>🔐 Security:</strong> Password protected admin panel (admin123)
+          </div>
+        </div>
+        <div className="mt-4 bg-yellow-50 p-4 rounded-lg border border-yellow-200">
           <p className="text-sm text-gray-700">
-            <strong>Mật khẩu hiện tại:</strong> <code className="bg-gray-100 px-2 py-1 rounded">admin123</code>
-          </p>
-          <p className="text-sm text-gray-700">
-            ⚠️ Để thay đổi mật khẩu, vui lòng liên hệ developer hoặc chỉnh sửa trong code tại file <code className="bg-gray-100 px-2 py-1 rounded">app/admin/page.tsx</code>
-          </p>
-          <p className="text-sm text-gray-700">
-            Sau khi đăng nhập, phiên làm việc sẽ được duy trì cho đến khi bạn đăng xuất hoặc tắt tab trình duyệt.
+            <strong>⚠️ Lưu ý bảo mật:</strong> Đổi mật khẩu mặc định "admin123" trong code (dòng 88) 
+            trước khi deploy production. Tìm đoạn <code className="bg-gray-200 px-1 rounded">if (password === 'admin123')</code> 
+            và thay bằng mật khẩu mạnh hơn.
           </p>
         </div>
       </div>
 
-      {/* Contact Support */}
-      <div className="bg-gradient-to-br from-blue-50 to-cyan-50 p-6 rounded-xl border-l-4 border-blue-400 shadow-sm">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-          <span>📧</span>{' '}
-          Hỗ Trợ
+      {/* Support */}
+      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-6 rounded-xl shadow-lg">
+        <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+          <span>💬</span> Cần Hỗ Trợ?
         </h3>
-        <p className="text-sm text-gray-700 mb-3">
-          Nếu bạn gặp vấn đề hoặc cần hỗ trợ thêm, vui lòng liên hệ:
+        <p className="text-sm mb-4 opacity-90">
+          Nếu gặp vấn đề hoặc cần thêm tính năng, vui lòng liên hệ team phát triển. 
+          Admin panel được xây dựng với Next.js 16, React 19, TypeScript và Tailwind CSS 4.
         </p>
-        <div className="space-y-2 text-sm text-gray-600">
-          <p>📧 Email: support@camico.com</p>
-          <p>📞 Hotline: 1900-xxxx</p>
-          <p>⏰ Thời gian hỗ trợ: 8:00 - 17:00 (T2-T6)</p>
+        <div className="flex gap-3 text-sm">
+          <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg">
+            <strong>Version:</strong> 1.0.0
+          </div>
+          <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg">
+            <strong>Last Updated:</strong> Nov 2024
+          </div>
         </div>
       </div>
     </div>
