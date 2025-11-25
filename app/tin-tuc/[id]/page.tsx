@@ -37,6 +37,7 @@ export default function ArticlePage() {
   const params = useParams()
   const idStr = params?.id
   const [article, setArticle] = useState<NewsArticle | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
   const [progress, setProgress] = useState(0)
   const [related, setRelated] = useState<NewsArticle[]>([])
   const [sanitizedHtml, setSanitizedHtml] = useState<string>('')
@@ -46,6 +47,7 @@ export default function ArticlePage() {
   useEffect(() => {
     async function loadArticle() {
       try {
+        setIsLoading(true)
         if (!idStr) return
         
         // Fetch from server API instead of localStorage
@@ -74,6 +76,8 @@ export default function ArticlePage() {
       } catch (e) {
         console.error('Error loading article', e)
         setArticle(null)
+      } finally {
+        setIsLoading(false)
       }
     }
     
@@ -131,19 +135,38 @@ export default function ArticlePage() {
     }
   }, [article])
 
-  if (!article) {
+  if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-8">
-        <div className="max-w-3xl w-full text-center">
-          <h2 className="text-2xl font-bold">Bài viết không tìm thấy</h2>
-          <p className="text-gray-600 mt-2">Có thể bài viết chưa được xuất bản hoặc ID không hợp lệ.</p>
-          <div className="mt-4">
-            <Link href="/tin-tuc" className="inline-flex items-center gap-2 text-[#2d5016] font-semibold">
-              <ArrowLeft className="w-4 h-4" /> Quay lại danh sách
-            </Link>
+      <>
+        <Header />
+        <div className="min-h-screen flex items-center justify-center p-8">
+          <div className="max-w-3xl w-full text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2d5016] mx-auto mb-4"></div>
+            <p className="text-gray-600">Đang tải bài viết...</p>
           </div>
         </div>
-      </div>
+        <Footer />
+      </>
+    )
+  }
+
+  if (!article) {
+    return (
+      <>
+        <Header />
+        <div className="min-h-screen flex items-center justify-center p-8">
+          <div className="max-w-3xl w-full text-center">
+            <h2 className="text-2xl font-bold">Bài viết không tìm thấy</h2>
+            <p className="text-gray-600 mt-2">Có thể bài viết chưa được xuất bản hoặc ID không hợp lệ.</p>
+            <div className="mt-4">
+              <Link href="/tin-tuc" className="inline-flex items-center gap-2 text-[#2d5016] font-semibold">
+                <ArrowLeft className="w-4 h-4" /> Quay lại danh sách
+              </Link>
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </>
     )
   }
 
