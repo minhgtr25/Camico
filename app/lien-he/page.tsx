@@ -51,6 +51,18 @@ export default async function ContactPage() {
     }
   }
 
+  // Ensure contactCards is always an array
+  if (!contactPage.contactCards || !Array.isArray(contactPage.contactCards)) {
+    contactPage = {
+      ...contactPage,
+      contactCards: [
+        { icon: "Phone", title: "Điện thoại", description: "Gọi cho chúng tôi để được tư vấn trực tiếp", value: "(+84) 123 456 789" },
+        { icon: "Mail", title: "Email", description: "Gửi email cho chúng tôi bất kỳ lúc nào", value: "info@camico.com.vn" },
+        { icon: "MapPin", title: "Địa chỉ", description: "Văn phòng chính", value: "Số 123 Đường ABC, Quận 1, TP. Hồ Chí Minh, Việt Nam" },
+      ]
+    }
+  }
+
   return (
     <main className="min-h-screen bg-[#f5f5dc]">
       <Header />
