@@ -1916,6 +1916,21 @@ function NewsEditor({
           </div>
 
           <div>
+            <label className="flex items-center gap-3 cursor-pointer bg-white p-4 rounded-lg border-2 border-indigo-200 hover:border-indigo-400 transition-all">
+              <input
+                type="checkbox"
+                checked={formData.featured}
+                onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
+                className="w-5 h-5 text-indigo-600 rounded focus:ring-2 focus:ring-indigo-500"
+              />
+              <div>
+                <div className="font-semibold text-gray-800">⭐ Bài nổi bật</div>
+                <div className="text-xs text-gray-500">Bài viết này sẽ hiển thị ở vị trí nổi bật trên landing page và /tin-tuc</div>
+              </div>
+            </label>
+          </div>
+
+          <div>
             <label htmlFor="news-layout" className="block text-sm font-semibold text-gray-700 mb-2">📐 Bố cục</label>
             <select 
               id="news-layout" 
@@ -2048,6 +2063,20 @@ function NewsEditor({
                   onChange={(e) => updateArticle(article.id, { author: e.target.value })} 
                   className="border-2 border-indigo-200 focus:border-indigo-500"
                 />
+                <div>
+                  <label className="flex items-center gap-3 cursor-pointer bg-indigo-50 p-3 rounded-lg border border-indigo-200 hover:bg-indigo-100 transition-all">
+                    <input
+                      type="checkbox"
+                      checked={article.featured || false}
+                      onChange={(e) => updateArticle(article.id, { featured: e.target.checked })}
+                      className="w-4 h-4 text-indigo-600 rounded focus:ring-2 focus:ring-indigo-500"
+                    />
+                    <div>
+                      <div className="font-semibold text-sm text-gray-800">⭐ Bài nổi bật</div>
+                      <div className="text-xs text-gray-500">Hiển thị ở landing page và /tin-tuc</div>
+                    </div>
+                  </label>
+                </div>
                 <ImageUploader 
                   value={article.image ?? ''} 
                   onChange={(url) => updateArticle(article.id, { image: url })} 

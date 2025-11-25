@@ -16,13 +16,10 @@ interface NewsArticle {
 }
 
 export function NewsSection({ content }: Readonly<{ content: NewsArticle[] }>) {
-  const highlights = useMemo(() => {
-    if (content?.length) return content
-    return []
+  // Get only ONE featured article (the one with featured=true)
+  const featuredArticle = useMemo(() => {
+    return content?.find(article => article.featured === true)
   }, [content])
-
-  const featuredArticle = useMemo(() => highlights?.[0], [highlights])
-  const highlightRest = useMemo(() => (highlights?.length > 1 ? highlights.slice(1) : []), [highlights])
 
   // Parse date strings in multiple formats (ISO yyyy-mm-dd or dd/mm/yyyy)
   const parseDate = (d?: string | number | Date) => {
@@ -47,16 +44,16 @@ export function NewsSection({ content }: Readonly<{ content: NewsArticle[] }>) {
     return new Date(0)
   }
 
-  // Regular articles: exclude highlights and sort by date descending (newest first)
+  // Regular articles: exclude featured article and sort by date descending (newest first)
   const regularArticles = useMemo(() => {
-    const list = content.filter(article => !highlights?.some(h => h.id === article.id))
+    const list = content.filter(article => article.id !== featuredArticle?.id)
     return list.sort((a, b) => parseDate(b.date).getTime() - parseDate(a.date).getTime())
-  }, [content, highlights, parseDate])
+  }, [content, featuredArticle])
 
   // On landing page show only the 3 newest regular articles
   const visibleRegular = useMemo(() => regularArticles.slice(0, 3), [regularArticles])
   
-  if (highlights.length === 0) {
+  if (!content || content.length === 0) {
     return null
   }
 
@@ -73,69 +70,42 @@ export function NewsSection({ content }: Readonly<{ content: NewsArticle[] }>) {
           </p>
         </div>
 
-        {/* Highlights / Featured Area */}
-        {highlights && highlights.length > 0 && (
+        {/* Featured Article - Only ONE */}
+        {featuredArticle && (
           <div className="mb-12">
-            <div className="grid md:grid-cols-3 gap-6">
-              {/* Large featured (first) */}
-              <article key={featuredArticle?.id} className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 md:col-span-2">
-                <div className="grid md:grid-cols-2 gap-0">
-                  <div className="relative h-64 md:h-full">
-                    <Image
-                      src={featuredArticle?.image || "/placeholder.svg"}
-                      alt={featuredArticle?.title || 'Featured'}
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute top-4 left-4">
-                      <span className="bg-[#2d5016] text-white px-4 py-1 rounded-full text-sm font-semibold">
-                        {featuredArticle?.category}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="p-8 md:p-10 flex flex-col justify-center">
-                    <div className="flex items-center gap-2 text-gray-600 mb-4">
-                      <Calendar className="w-4 h-4" />
-                      <span className="text-sm">{featuredArticle?.date}</span>
-                    </div>
-                    <h3 className="text-2xl md:text-3xl font-bold text-[#2d5016] mb-4 leading-tight">
-                      {featuredArticle?.title}
-                    </h3>
-                    <p className="text-gray-700 mb-6 leading-relaxed">
-                      {featuredArticle?.excerpt}
-                    </p>
-                    <Link href={`/tin-tuc/${featuredArticle?.id}`} className="inline-flex items-center gap-2 text-[#2d5016] font-semibold hover:gap-3 transition-all duration-300">
-                      Đọc thêm
-                      <ArrowRight className="w-5 h-5" />
-                    </Link>
+            <article className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <div className="grid md:grid-cols-2 gap-0">
+                <div className="relative h-64 md:h-full">
+                  <Image
+                    src={featuredArticle.image || "/placeholder.svg"}
+                    alt={featuredArticle.title}
+                    fill
+                    className="object-cover"
+                  />
+                  <div className="absolute top-4 left-4">
+                    <span className="bg-gradient-to-r from-[#2d5016] to-[#3d6826] text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+                      ⭐ {featuredArticle.category}
+                    </span>
                   </div>
                 </div>
-              </article>
-
-              {/* Additional highlights (if any) */}
-              <div className="flex flex-col gap-6">
-                {highlightRest.map((h) => (
-                  <article key={h.id} className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 flex">
-                    <div className="relative w-1/3 h-28">
-                      <Image src={h.image || '/placeholder.svg'} alt={h.title} fill className="object-cover" />
-                    </div>
-                    <div className="p-4 flex flex-col justify-between w-2/3">
-                      <div>
-                        <div className="flex items-center gap-2 text-gray-600 mb-2">
-                          <Calendar className="w-4 h-4" />
-                          <span className="text-sm">{h.date}</span>
-                        </div>
-                        <h4 className="text-lg font-bold text-[#2d5016] leading-tight line-clamp-2">{h.title}</h4>
-                      </div>
-                      <Link href={`/tin-tuc/${h.id}`} className="inline-flex items-center gap-2 text-[#2d5016] font-semibold hover:gap-3 transition-all duration-300 mt-2">
-                        Đọc thêm
-                        <ArrowRight className="w-4 h-4" />
-                      </Link>
-                    </div>
-                  </article>
-                ))}
+                <div className="p-8 md:p-10 flex flex-col justify-center">
+                  <div className="flex items-center gap-2 text-gray-600 mb-4">
+                    <Calendar className="w-4 h-4" />
+                    <span className="text-sm">{featuredArticle.date}</span>
+                  </div>
+                  <h3 className="text-2xl md:text-3xl font-bold text-[#2d5016] mb-4 leading-tight">
+                    {featuredArticle.title}
+                  </h3>
+                  <p className="text-gray-700 mb-6 leading-relaxed">
+                    {featuredArticle.excerpt}
+                  </p>
+                  <Link href={`/tin-tuc/${featuredArticle.id}`} className="inline-flex items-center gap-2 text-white bg-gradient-to-r from-[#2d5016] to-[#3d6826] px-6 py-3 rounded-lg font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300 w-fit">
+                    Đọc thêm
+                    <ArrowRight className="w-5 h-5" />
+                  </Link>
+                </div>
               </div>
-            </div>
+            </article>
           </div>
         )}
 

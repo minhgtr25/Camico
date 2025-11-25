@@ -31,6 +31,15 @@ export default async function DoiTacPage() {
     }
   }
 
+  // Get partners array from admin content
+  const partnerLogos = adminContent?.partners || [
+    { id: 1, name: "Partner 1", logo: "/images/logo-green.png" },
+    { id: 2, name: "Partner 2", logo: "/images/logo-green.png" },
+    { id: 3, name: "Partner 3", logo: "/images/logo-green.png" },
+    { id: 4, name: "Partner 4", logo: "/images/logo-green.png" },
+    { id: 5, name: "Partner 5", logo: "/images/logo-green.png" },
+  ]
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -47,7 +56,7 @@ export default async function DoiTacPage() {
         </div>
       </section>
 
-      <PartnersClient partnersData={partnersData} />
+      <PartnersClient partnersData={partnersData} partnerLogos={partnerLogos} />
 
       <Footer />
     </div>

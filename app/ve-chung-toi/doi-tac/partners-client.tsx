@@ -2,22 +2,18 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import { AboutPagePartners } from "@/lib/types"
+import { AboutPagePartners, Partner } from "@/lib/types"
 
 interface PartnersClientProps {
   partnersData: AboutPagePartners
+  partnerLogos: Partner[]
 }
 
-export function PartnersClient({ partnersData }: PartnersClientProps) {
+export function PartnersClient({ partnersData, partnerLogos }: Readonly<PartnersClientProps>) {
   const [isPaused, setIsPaused] = useState(false)
 
-  const partners = [
-    { id: 1, name: "Partner 1", logo: "/images/logo-green.png" },
-    { id: 2, name: "Partner 2", logo: "/images/logo-green.png" },
-    { id: 3, name: "Partner 3", logo: "/images/logo-green.png" },
-    { id: 4, name: "Partner 4", logo: "/images/logo-green.png" },
-    { id: 5, name: "Partner 5", logo: "/images/logo-green.png" },
-  ]
+  // Use partner logos from admin content
+  const partners = partnerLogos
 
   return (
     <section className="py-16 px-4 bg-[#F5F5DC]">
