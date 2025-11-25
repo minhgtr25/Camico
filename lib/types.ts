@@ -138,21 +138,15 @@ export interface AboutPagePartners {
 
 export interface AboutPageMission {
   hero: {
-    backgroundImage: string
+    image: string
   }
   companyName: string
-  vision: {
-    title: string
-    content: string
-  }
+  vision: string
   mission: {
-    title: string
-    content: string[]
+    description: string
+    points: string[]
   }
-  coreValues: {
-    title: string
-    values: string[]
-  }
+  coreValues: string[]
 }
 
 export interface AboutPageMessage {

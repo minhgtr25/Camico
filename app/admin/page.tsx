@@ -2734,18 +2734,18 @@ function AboutMissionEditor({ content, setContent }: { content: AdminContent; se
     setContent({ ...content, pages: { ...content.pages, aboutMission: updated } })
   }
 
-  const addMissionPoint = () => updateField('mission.points', [...aboutMission.mission.points, ''])
-  const removeMissionPoint = (i: number) => updateField('mission.points', aboutMission.mission.points.filter((_, idx) => idx !== i))
+  const addMissionPoint = () => updateField('mission.points', [...(aboutMission.mission?.points || []), ''])
+  const removeMissionPoint = (i: number) => updateField('mission.points', (aboutMission.mission?.points || []).filter((_, idx) => idx !== i))
   const updateMissionPoint = (i: number, v: string) => {
-    const pts = [...aboutMission.mission.points]
+    const pts = [...(aboutMission.mission?.points || [])]
     pts[i] = v
     updateField('mission.points', pts)
   }
 
-  const addCoreValue = () => updateField('coreValues', [...aboutMission.coreValues, ''])
-  const removeCoreValue = (i: number) => updateField('coreValues', aboutMission.coreValues.filter((_, idx) => idx !== i))
+  const addCoreValue = () => updateField('coreValues', [...(aboutMission.coreValues || []), ''])
+  const removeCoreValue = (i: number) => updateField('coreValues', (aboutMission.coreValues || []).filter((_, idx) => idx !== i))
   const updateCoreValue = (i: number, v: string) => {
-    const vals = [...aboutMission.coreValues]
+    const vals = [...(aboutMission.coreValues || [])]
     vals[i] = v
     updateField('coreValues', vals)
   }
@@ -2784,7 +2784,7 @@ function AboutMissionEditor({ content, setContent }: { content: AdminContent; se
           <h4 className="font-semibold">Điểm nhấn sứ mệnh:</h4>
           <Button onClick={addMissionPoint} size="sm" className="bg-orange-600">+ Thêm điểm</Button>
         </div>
-        {aboutMission.mission.points.map((pt, i) => (
+        {(aboutMission.mission?.points || []).map((pt, i) => (
           <div key={i} className="flex gap-2">
             <Input value={pt} onChange={(e) => updateMissionPoint(i, e.target.value)} placeholder="Vì sức khỏe..." />
             <Button onClick={() => removeMissionPoint(i)} size="sm" variant="destructive">Xóa</Button>
@@ -2797,7 +2797,7 @@ function AboutMissionEditor({ content, setContent }: { content: AdminContent; se
           <h3 className="font-semibold text-gray-800">💎 Giá trị cốt lõi</h3>
           <Button onClick={addCoreValue} size="sm" className="bg-purple-600">+ Thêm giá trị</Button>
         </div>
-        {aboutMission.coreValues.map((val, i) => (
+        {(aboutMission.coreValues || []).map((val, i) => (
           <div key={i} className="flex gap-2">
             <Input value={val} onChange={(e) => updateCoreValue(i, e.target.value)} placeholder="Trung thực & Trách nhiệm" />
             <Button onClick={() => removeCoreValue(i)} size="sm" variant="destructive">Xóa</Button>

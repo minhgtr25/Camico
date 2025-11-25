@@ -241,31 +241,24 @@ export const defaultAdminContent: AdminContent = {
     },
     aboutMission: {
       hero: {
-        backgroundImage: '/images/566248596-122105651259050657-7322533910289484122-n.jpg',
+        image: '/images/566248596-122105651259050657-7322533910289484122-n.jpg',
       },
       companyName: 'CÔNG TY CỔ PHẦN CAMICO',
-      vision: {
-        title: 'Tầm nhìn',
-        content: 'Trở thành thương hiệu dẫn đầu Việt Nam trong lĩnh vực thức ăn chăn nuôi sinh học, hướng tới xuất khẩu ra khu vực ASEAN vào năm 2035. CAMICO định hướng trở thành biểu tượng của nông nghiệp xanh, nơi hội tụ khoa học, thiên nhiên và con người, góp phần xây dựng hệ sinh thái chăn nuôi bền vững và tự chủ cho Việt Nam.',
-      },
+      vision: 'Trở thành thương hiệu dẫn đầu Việt Nam trong lĩnh vực thức ăn chăn nuôi sinh học, hướng tới xuất khẩu ra khu vực ASEAN vào năm 2035. CAMICO định hướng trở thành biểu tượng của nông nghiệp xanh, nơi hội tụ khoa học, thiên nhiên và con người, góp phần xây dựng hệ sinh thái chăn nuôi bền vững và tự chủ cho Việt Nam.',
       mission: {
-        title: 'Sứ mệnh',
-        content: [
-          'Mang đến giải pháp dinh dưỡng xanh – an toàn – hiệu quả',
+        description: 'Mang đến giải pháp dinh dưỡng xanh – an toàn – hiệu quả',
+        points: [
           'Vì sức khỏe vật nuôi và Sức khỏe người tiêu dùng',
           'CAMICO không chỉ nuôi dưỡng vật nuôi, mà còn nuôi dưỡng hy vọng và tương lai cho người nông dân Việt Nam.',
         ],
       },
-      coreValues: {
-        title: 'Giá trị cốt lõi',
-        values: [
-          'Trung thực & Trách nhiệm',
-          'Đổi mới & Sáng tạo',
-          'Dũng cảm & Chia sẻ',
-          'Bền vững & Nhân văn',
-          'Chất lượng & Niềm tin',
-        ],
-      },
+      coreValues: [
+        'Trung thực & Trách nhiệm',
+        'Đổi mới & Sáng tạo',
+        'Dũng cảm & Chia sẻ',
+        'Bền vững & Nhân văn',
+        'Chất lượng & Niềm tin',
+      ],
     },
     aboutMessage: {
       hero: {

@@ -47,19 +47,19 @@ export function MissionClient({ missionData }: MissionClientProps) {
 
           <div className="mb-12">
             <h2 className="text-2xl font-bold text-[#2d5016] mb-4 text-center">Sứ mệnh</h2>
-            {missionData.mission.description && (
+            {missionData.mission?.description && (
               <p className="text-gray-800 leading-relaxed text-center">{missionData.mission.description}</p>
             )}
-            {missionData.mission.points.map((point, i) => (
+            {(missionData.mission?.points || []).map((point, i) => (
               <p key={i} className="text-gray-800 leading-relaxed text-center mt-2">{point}</p>
             ))}
           </div>
 
-          {missionData.coreValues.length > 0 && (
+          {(missionData.coreValues || []).length > 0 && (
             <div>
               <h2 className="text-2xl font-bold text-[#2d5016] mb-6 text-center">Giá trị cốt lõi</h2>
               <div className="space-y-3 text-gray-800">
-                {missionData.coreValues.map((value, i) => (
+                {(missionData.coreValues || []).map((value, i) => (
                   <p key={i} className="text-center">{value}</p>
                 ))}
               </div>
