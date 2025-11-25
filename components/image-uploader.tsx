@@ -53,10 +53,13 @@ export function ImageUploader({
     setUploading(true)
 
     try {
-      // Upload to Vercel Blob
-      const response = await fetch(`/api/upload?filename=${encodeURIComponent(file.name)}`, {
+      // Upload to Cloudinary
+      const formData = new FormData()
+      formData.append('file', file)
+
+      const response = await fetch('/api/upload', {
         method: 'POST',
-        body: file,
+        body: formData,
       })
 
       if (!response.ok) {
@@ -67,7 +70,7 @@ export function ImageUploader({
       onChange(url)
       toast({
         title: '✅ Upload thành công',
-        description: 'Ảnh đã được tải lên',
+        description: 'Ảnh đã được tải lên Cloudinary',
       })
     } catch (error) {
       console.error('Upload error:', error)
