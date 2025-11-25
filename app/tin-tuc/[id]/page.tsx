@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { getAdminContent } from '@/lib/admin-content'
 import { NewsArticle } from '@/lib/types'
 import { ArrowLeft, Share2 } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
@@ -45,22 +44,40 @@ export default function ArticlePage() {
   const [readingTime, setReadingTime] = useState<number>(0)
 
   useEffect(() => {
-    try {
-      if (!idStr) return
-      const admin = getAdminContent()
-      const idClean = Array.isArray(idStr) ? idStr[0] : (idStr ?? '')
-      const idNum = Number.parseInt(idClean, 10)
-      const found = admin.news.find((n) => n.id === idNum)
-      if (found) setArticle(found)
-      else setArticle(null)
+    async function loadArticle() {
+      try {
+        if (!idStr) return
+        
+        // Fetch from server API instead of localStorage
+        const response = await fetch('/api/admin/content', {
+          cache: 'no-store'
+        })
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch content')
+        }
+        
+        const admin = await response.json()
+        const idClean = Array.isArray(idStr) ? idStr[0] : (idStr ?? '')
+        const idNum = Number.parseInt(idClean, 10)
+        const found = admin.news?.find((n: NewsArticle) => n.id === idNum)
+        
+        if (found) {
+          setArticle(found)
+        } else {
+          setArticle(null)
+        }
 
-      // compute related articles (latest 3 excluding current)
-      const rel = admin.news.filter((n) => n.id !== idNum).slice(-3).reverse()
-      setRelated(rel)
-    } catch (e) {
-      console.error('Error loading article', e)
-      setArticle(null)
+        // compute related articles (latest 3 excluding current)
+        const rel = (admin.news || []).filter((n: NewsArticle) => n.id !== idNum).slice(-3).reverse()
+        setRelated(rel)
+      } catch (e) {
+        console.error('Error loading article', e)
+        setArticle(null)
+      }
     }
+    
+    loadArticle()
   }, [idStr])
 
   useEffect(() => {
