@@ -1,6 +1,8 @@
 import { fetchAdminContentFromServer } from '@/lib/admin-content'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
+import Link from 'next/link'
+import { ChevronRight } from 'lucide-react'
 import ProductsClient from './products-client'
 
 export const dynamic = 'force-dynamic'
@@ -41,6 +43,19 @@ export default async function SanPhamPage() {
   return (
     <div className="min-h-screen flex flex-col bg-[#f5f5dc]">
       <Header />
+      
+      {/* Breadcrumb */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <Link href="/" className="hover:text-[#2d5016] transition-colors">
+              Trang chủ
+            </Link>
+            <ChevronRight className="w-4 h-4" />
+            <span className="text-[#2d5016] font-medium">Sản phẩm</span>
+          </div>
+        </div>
+      </div>
       
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-[#2d5016] to-[#3d6826] text-white py-16 md:py-24">
