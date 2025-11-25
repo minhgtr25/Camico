@@ -11,9 +11,18 @@ import { BackToTop } from "@/components/back-to-top"
 import { defaultAdminContent } from "@/lib/admin-content"
 import { kv } from '@vercel/kv'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 async function getAdminContent() {
+  // Chỉ gọi KV khi đang runtime, không phải build time
+  if (process.env.NODE_ENV === 'production' && process.env.VERCEL_ENV === undefined) {
+    // Build time - return default
+    return defaultAdminContent
+  }
+  
   try {
-    // Gọi trực tiếp KV thay vì fetch API
     const content = await kv.get('admin-content')
     return content || defaultAdminContent
   } catch (error) {
