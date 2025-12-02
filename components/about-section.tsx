@@ -40,8 +40,8 @@ export function AboutSection({ content }: Readonly<{ content: AboutContent }>) {
         </div>
 
         {/* Quote Section */}
-        <div className="mt-12 md:mt-16">
-          <p className="text-center text-2xl md:text-3xl font-bold text-[#1a1a1a] max-w-5xl mx-auto leading-relaxed font-handwriting">
+        <div className="mt-12 md:mt-16 px-4">
+          <p className="text-center text-2xl md:text-3xl font-bold text-[#1a1a1a] max-w-5xl mx-auto leading-relaxed font-handwriting break-words">
             "{content.quote}"
           </p>
         </div>
