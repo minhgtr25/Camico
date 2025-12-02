@@ -141,6 +141,7 @@ export interface AboutPageMission {
   hero: {
     image: string
   }
+  backgroundImage?: string
   companyName: string
   vision: string
   mission: {
@@ -152,8 +153,9 @@ export interface AboutPageMission {
 
 export interface AboutPageMessage {
   hero: {
-    backgroundImage: string
+    image: string
   }
+  backgroundImage?: string
   title: string
   subtitle: string
   greeting: string

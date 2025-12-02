@@ -243,6 +243,7 @@ export const defaultAdminContent: AdminContent = {
       hero: {
         image: '/images/566248596-122105651259050657-7322533910289484122-n.jpg',
       },
+      backgroundImage: '/images/ffd8709f-9ab7-4349-bed4-dc184fdce017.png',
       companyName: 'CÔNG TY CỔ PHẦN CAMICO',
       vision: 'Trở thành thương hiệu dẫn đầu Việt Nam trong lĩnh vực thức ăn chăn nuôi sinh học, hướng tới xuất khẩu ra khu vực ASEAN vào năm 2035. CAMICO định hướng trở thành biểu tượng của nông nghiệp xanh, nơi hội tụ khoa học, thiên nhiên và con người, góp phần xây dựng hệ sinh thái chăn nuôi bền vững và tự chủ cho Việt Nam.',
       mission: {
@@ -264,6 +265,7 @@ export const defaultAdminContent: AdminContent = {
       hero: {
         image: '/images/566248596-122105651259050657-7322533910289484122-n.jpg',
       },
+      backgroundImage: '/images/ffd8709f-9ab7-4349-bed4-dc184fdce017.png',
       title: 'THƯ NGỎ',
       subtitle: 'Thông điệp nhà sáng lập',
       greeting: 'Kính gửi: Quý khách hàng, đối tác và bạn bè,',

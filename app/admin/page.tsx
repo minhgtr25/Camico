@@ -3111,8 +3111,19 @@ function AboutMissionEditor({ content, setContent }: { content: AdminContent; se
       </div>
 
       <div className="space-y-4 bg-gradient-to-br from-gray-50 to-blue-50 p-6 rounded-xl border">
-        <h3 className="font-semibold text-gray-800">🖼️ Hero Image</h3>
-        <ImageUploader value={aboutMission.hero.image} onChange={(url) => updateField('hero.image', url)} label="Ảnh Hero" />
+        <h3 className="font-semibold text-gray-800">🖼️ Ảnh Hero (Ảnh lớn CAMICO phía trên)</h3>
+        <p className="text-sm text-gray-600">Ảnh này hiển thị ở phần header với logo CAMICO</p>
+        <ImageUploader value={aboutMission.hero?.image || ''} onChange={(url) => updateField('hero.image', url)} label="Upload Ảnh Hero" />
+      </div>
+
+      <div className="space-y-4 bg-gradient-to-br from-gray-50 to-purple-50 p-6 rounded-xl border">
+        <h3 className="font-semibold text-gray-800">🌄 Ảnh nền nội dung (Ảnh mờ phía sau)</h3>
+        <p className="text-sm text-gray-600">Ảnh này hiển thị làm background cho phần nội dung sứ mệnh</p>
+        <ImageUploader 
+          value={aboutMission.backgroundImage || '/images/ffd8709f-9ab7-4349-bed4-dc184fdce017.png'} 
+          onChange={(url) => updateField('backgroundImage', url)} 
+          label="Upload Ảnh nền" 
+        />
       </div>
 
       <div className="space-y-4 bg-gradient-to-br from-gray-50 to-green-50 p-6 rounded-xl border">
@@ -3209,12 +3220,22 @@ function AboutMessageEditor({ content, setContent }: { content: AdminContent; se
       </div>
 
       <div className="space-y-4 bg-gradient-to-br from-gray-50 to-blue-50 p-6 rounded-xl border">
-        <h3 className="font-semibold text-gray-800">🖼️ Ảnh Hero (Ảnh lớn phía trên)</h3>
-        <p className="text-sm text-gray-600">Ảnh sẽ hiển thị ở phần tiêu đề trang với logo CAMICO</p>
+        <h3 className="font-semibold text-gray-800">🖼️ Ảnh Hero (Ảnh lớn CAMICO phía trên)</h3>
+        <p className="text-sm text-gray-600">Ảnh này hiển thị ở phần header với logo CAMICO và chữ "THỨC ĂN XANH"</p>
         <ImageUploader 
           value={aboutMessage.hero?.image || ''} 
           onChange={(url) => updateField('hero', { image: url })} 
           label="Upload Ảnh Hero" 
+        />
+      </div>
+
+      <div className="space-y-4 bg-gradient-to-br from-gray-50 to-purple-50 p-6 rounded-xl border">
+        <h3 className="font-semibold text-gray-800">🌄 Ảnh nền bức thư (Ảnh mờ phía sau)</h3>
+        <p className="text-sm text-gray-600">Ảnh này hiển thị làm background cho phần nội dung thư ngỏ</p>
+        <ImageUploader 
+          value={aboutMessage.backgroundImage || '/images/ffd8709f-9ab7-4349-bed4-dc184fdce017.png'} 
+          onChange={(url) => updateField('backgroundImage', url)} 
+          label="Upload Ảnh nền" 
         />
       </div>
 

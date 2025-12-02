@@ -18,7 +18,7 @@ export function MessageClient({ messageData }: MessageClientProps) {
     <section className="relative py-16 px-4 overflow-hidden bg-white">
       <div className="absolute inset-0 z-0">
         <Image
-          src="/images/ffd8709f-9ab7-4349-bed4-dc184fdce017.png"
+          src={messageData.backgroundImage || "/images/ffd8709f-9ab7-4349-bed4-dc184fdce017.png"}
           alt="Farm landscape background"
           fill
           className="object-cover blur-md"
