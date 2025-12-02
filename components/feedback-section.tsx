@@ -101,7 +101,7 @@ export function FeedbackSection({ content }: Readonly<{ content: Testimonial[] }
               {currentTestimonials.map((testimonial) => (
                 <div
                   key={testimonial.id}
-                  className="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col"
+                  className="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col h-full"
                 >
                   <div className="flex flex-col sm:flex-row gap-6 p-6 flex-1">
                     {/* Image */}
@@ -129,16 +129,16 @@ export function FeedbackSection({ content }: Readonly<{ content: Testimonial[] }
                       </div>
 
                       {/* Feedback */}
-                      <p className="text-gray-700 text-sm leading-relaxed text-justify mb-4 flex-1">
+                      <p className="text-gray-700 text-sm leading-relaxed text-justify mb-4 flex-1 overflow-auto">
                         {testimonial.feedback}
                       </p>
 
                       {/* Name & Role */}
-                      <div className="mt-auto pt-2">
-                        <p className="font-bold text-[#2d5016] text-base">
+                      <div className="mt-auto pt-2 border-t border-gray-100">
+                        <p className="font-bold text-[#2d5016] text-base mt-2">
                           {testimonial.name}
                         </p>
-                        <p className="text-gray-600 text-sm">{testimonial.role}</p>
+                        <p className="text-gray-600 text-sm break-words">{testimonial.role}</p>
                       </div>
                     </div>
                   </div>
