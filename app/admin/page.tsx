@@ -3120,7 +3120,7 @@ function AboutMissionEditor({ content, setContent }: { content: AdminContent; se
         <h3 className="font-semibold text-gray-800">🌄 Ảnh nền nội dung (Ảnh mờ phía sau)</h3>
         <p className="text-sm text-gray-600">Ảnh này hiển thị làm background cho phần nội dung sứ mệnh</p>
         <ImageUploader 
-          value={aboutMission.backgroundImage || '/images/ffd8709f-9ab7-4349-bed4-dc184fdce017.png'} 
+          value={aboutMission.backgroundImage || '/images/design-mode/00d08d10-a02c-48fd-8d06-ea6e8d4d9a47.png'} 
           onChange={(url) => updateField('backgroundImage', url)} 
           label="Upload Ảnh nền" 
         />
@@ -3233,7 +3233,7 @@ function AboutMessageEditor({ content, setContent }: { content: AdminContent; se
         <h3 className="font-semibold text-gray-800">🌄 Ảnh nền bức thư (Ảnh mờ phía sau)</h3>
         <p className="text-sm text-gray-600">Ảnh này hiển thị làm background cho phần nội dung thư ngỏ</p>
         <ImageUploader 
-          value={aboutMessage.backgroundImage || '/images/ffd8709f-9ab7-4349-bed4-dc184fdce017.png'} 
+          value={aboutMessage.backgroundImage || '/images/design-mode/00d08d10-a02c-48fd-8d06-ea6e8d4d9a47.png'} 
           onChange={(url) => updateField('backgroundImage', url)} 
           label="Upload Ảnh nền" 
         />

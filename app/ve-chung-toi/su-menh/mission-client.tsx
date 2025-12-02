@@ -12,7 +12,7 @@ export function MissionClient({ missionData }: MissionClientProps) {
     <section className="relative py-16 px-4 overflow-hidden bg-white">
       <div className="absolute inset-0 z-0">
         <Image
-          src={missionData.backgroundImage || "/images/ffd8709f-9ab7-4349-bed4-dc184fdce017.png"}
+          src={missionData.backgroundImage || "/images/design-mode/00d08d10-a02c-48fd-8d06-ea6e8d4d9a47.png"}
           alt="Farm landscape background"
           fill
           className="object-cover blur-md"
