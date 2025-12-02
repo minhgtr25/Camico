@@ -136,11 +136,11 @@ export function FeedbackSection({ content }: Readonly<{ content: Testimonial[] }
                       </div>
 
                       {/* Name & Role */}
-                      <div className="mt-auto pt-2 border-t border-gray-100 flex-shrink-0">
-                        <p className="font-bold text-[#2d5016] text-base mt-2">
+                      <div className="mt-auto pt-3 border-t border-gray-100 flex-shrink-0 min-h-[80px]">
+                        <p className="font-bold text-[#2d5016] text-base mb-1">
                           {testimonial.name}
                         </p>
-                        <p className="text-gray-600 text-sm break-words">{testimonial.role}</p>
+                        <p className="text-gray-600 text-sm break-words leading-snug">{testimonial.role}</p>
                       </div>
                     </div>
                   </div>
