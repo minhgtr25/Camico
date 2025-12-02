@@ -262,7 +262,7 @@ export const defaultAdminContent: AdminContent = {
     },
     aboutMessage: {
       hero: {
-        backgroundImage: '/images/566248596-122105651259050657-7322533910289484122-n.jpg',
+        image: '/images/566248596-122105651259050657-7322533910289484122-n.jpg',
       },
       title: 'THƯ NGỎ',
       subtitle: 'Thông điệp nhà sáng lập',

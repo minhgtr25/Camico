@@ -3169,7 +3169,23 @@ function AboutMessageEditor({ content, setContent }: { content: AdminContent; se
   }
 
   const updateField = (field: string, value: any) => {
-    setContent({ ...content, pages: { ...content.pages, aboutMessage: { ...aboutMessage, [field]: value } } })
+    if (field === 'hero') {
+      setContent({ 
+        ...content, 
+        pages: { 
+          ...content.pages, 
+          aboutMessage: { ...aboutMessage, hero: value } 
+        } 
+      })
+    } else {
+      setContent({ 
+        ...content, 
+        pages: { 
+          ...content.pages, 
+          aboutMessage: { ...aboutMessage, [field]: value } 
+        } 
+      })
+    }
   }
 
   const addParagraph = () => updateField('paragraphs', [...aboutMessage.paragraphs, ''])
