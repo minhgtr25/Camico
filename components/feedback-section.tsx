@@ -117,9 +117,9 @@ export function FeedbackSection({ content }: Readonly<{ content: Testimonial[] }
                     </div>
 
                     {/* Content */}
-                    <div className="flex-1 flex flex-col min-h-0">
+                    <div className="flex-1 flex flex-col h-full min-h-0">
                       {/* Stars */}
-                      <div className="flex gap-1 mb-3">
+                      <div className="flex gap-1 mb-3 flex-shrink-0">
                         {Array.from({ length: testimonial.rating }).map((_, i) => (
                           <Star
                             key={i}
@@ -129,12 +129,14 @@ export function FeedbackSection({ content }: Readonly<{ content: Testimonial[] }
                       </div>
 
                       {/* Feedback */}
-                      <p className="text-gray-700 text-sm leading-relaxed text-justify mb-4 flex-1 overflow-auto">
-                        {testimonial.feedback}
-                      </p>
+                      <div className="flex-1 min-h-0 mb-4 overflow-auto">
+                        <p className="text-gray-700 text-sm leading-relaxed text-justify">
+                          {testimonial.feedback}
+                        </p>
+                      </div>
 
                       {/* Name & Role */}
-                      <div className="mt-auto pt-2 border-t border-gray-100">
+                      <div className="mt-auto pt-2 border-t border-gray-100 flex-shrink-0">
                         <p className="font-bold text-[#2d5016] text-base mt-2">
                           {testimonial.name}
                         </p>
