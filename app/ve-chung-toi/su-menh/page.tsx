@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic'
 export default async function SuMenhPage() {
   const adminContent = await fetchAdminContentFromServer()
   let missionData = adminContent?.pages?.aboutMission || {
-    hero: { image: "/public/images/farm-background-letter.png" },
+    hero: { image: "/images/farm-background-letter.png" },
     companyName: "CÔNG TY CỔ PHẦN CAMICO",
     vision: "Trở thành thương hiệu dẫn đầu Việt Nam trong lĩnh vực thức ăn chăn nuôi sinh học...",
     mission: {
