@@ -3209,8 +3209,13 @@ function AboutMessageEditor({ content, setContent }: { content: AdminContent; se
       </div>
 
       <div className="space-y-4 bg-gradient-to-br from-gray-50 to-blue-50 p-6 rounded-xl border">
-        <h3 className="font-semibold text-gray-800">🖼️ Hero Image</h3>
-        <ImageUploader value={aboutMessage.hero.image} onChange={(url) => updateField('hero', { image: url })} label="Ảnh Hero" />
+        <h3 className="font-semibold text-gray-800">🖼️ Ảnh Hero (Ảnh lớn phía trên)</h3>
+        <p className="text-sm text-gray-600">Ảnh sẽ hiển thị ở phần tiêu đề trang với logo CAMICO</p>
+        <ImageUploader 
+          value={aboutMessage.hero?.image || ''} 
+          onChange={(url) => updateField('hero', { image: url })} 
+          label="Upload Ảnh Hero" 
+        />
       </div>
 
       <div className="space-y-4 bg-gradient-to-br from-gray-50 to-green-50 p-6 rounded-xl border">
