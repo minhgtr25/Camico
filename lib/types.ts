@@ -66,6 +66,7 @@ export interface FAQ {
 export interface ContentBlock {
   id: string
   type: 'text' | 'image'
+  title?: string // Optional title for the block
   content?: string // For text blocks
   imageUrl?: string // For image blocks
   imageCaption?: string // Caption/description for images

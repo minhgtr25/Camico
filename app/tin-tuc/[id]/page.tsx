@@ -244,23 +244,33 @@ export default function ArticlePage() {
                 {article.contentBlocks.map((block) => {
                   if (block.type === 'text' && block.content) {
                     return (
-                      <div key={block.id} dangerouslySetInnerHTML={{ __html: sanitizeHtmlFallback(block.content) }} />
+                      <div key={block.id} className="space-y-3">
+                        {block.title && (
+                          <h3 className="text-xl font-bold text-gray-900 mt-8 mb-4">{block.title}</h3>
+                        )}
+                        <div dangerouslySetInnerHTML={{ __html: sanitizeHtmlFallback(block.content) }} />
+                      </div>
                     )
                   }
                   if (block.type === 'image' && block.imageUrl) {
                     return (
-                      <figure key={block.id} className="my-8">
-                        <img 
-                          src={block.imageUrl} 
-                          alt={block.imageAlt || block.imageCaption || 'Article image'} 
-                          className="w-full rounded-lg shadow-lg"
-                        />
-                        {block.imageCaption && (
-                          <figcaption className="mt-3 text-center text-sm text-gray-600 italic">
-                            {block.imageCaption}
-                          </figcaption>
+                      <div key={block.id} className="my-8">
+                        {block.title && (
+                          <h3 className="text-xl font-bold text-gray-900 mb-4">{block.title}</h3>
                         )}
-                      </figure>
+                        <figure>
+                          <img 
+                            src={block.imageUrl} 
+                            alt={block.imageAlt || block.imageCaption || 'Article image'} 
+                            className="w-full rounded-lg shadow-lg"
+                          />
+                          {block.imageCaption && (
+                            <figcaption className="mt-3 text-center text-sm text-gray-600 italic">
+                              {block.imageCaption}
+                            </figcaption>
+                          )}
+                        </figure>
+                      </div>
                     )
                   }
                   return null

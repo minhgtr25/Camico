@@ -1731,7 +1731,7 @@ function NewsEditor({
     category: '',
     featured: false,
     content: '',
-    contentBlocks: [] as Array<{ id: string; type: 'text' | 'image'; content?: string; imageUrl?: string; imageCaption?: string; imageAlt?: string }>,
+    contentBlocks: [] as Array<{ id: string; type: 'text' | 'image'; title?: string; content?: string; imageUrl?: string; imageCaption?: string; imageAlt?: string }>,
     layout: 'standard' as 'standard' | 'large-image' | 'split',
     author: '',
   })
@@ -2047,6 +2047,21 @@ function NewsEditor({
                           🗑️
                         </Button>
                       </div>
+                    </div>
+
+                    {/* Block Title (optional for all blocks) */}
+                    <div>
+                      <label className="block text-xs font-semibold text-gray-600 mb-1">Tiêu đề block (tuỳ chọn)</label>
+                      <Input
+                        value={block.title || ''}
+                        onChange={(e) => {
+                          const blocks = [...formData.contentBlocks]
+                          blocks[index] = { ...blocks[index], title: e.target.value }
+                          setFormData({ ...formData, contentBlocks: blocks })
+                        }}
+                        placeholder="VD: Giới thiệu, Phân tích, Kết luận..."
+                        className="w-full border-2 border-gray-300 rounded-lg px-3 py-2"
+                      />
                     </div>
 
                     {block.type === 'text' && (
