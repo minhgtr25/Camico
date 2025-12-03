@@ -241,7 +241,7 @@ export const defaultAdminContent: AdminContent = {
     },
     aboutMission: {
       hero: {
-        image: '/images/design-mode/00d08d10-a02c-48fd-8d06-ea6e8d4d9a47.png',
+        image: '/images/anh-hero.png',
       },
       backgroundImage: '/images/design-mode/00d08d10-a02c-48fd-8d06-ea6e8d4d9a47.png',
       companyName: 'CÔNG TY CỔ PHẦN CAMICO',
@@ -263,7 +263,7 @@ export const defaultAdminContent: AdminContent = {
     },
     aboutMessage: {
       hero: {
-        image: '/images/design-mode/00d08d10-a02c-48fd-8d06-ea6e8d4d9a47.png',
+        image: '/images/anh-hero.png',
       },
       backgroundImage: '/images/design-mode/00d08d10-a02c-48fd-8d06-ea6e8d4d9a47.png',
       title: 'THƯ NGỎ',

@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic'
 export default async function ThongDiepPage() {
   const adminContent = await fetchAdminContentFromServer()
   const messageData = adminContent?.pages?.aboutMessage || {
-    hero: { image: "/images/design-mode/00d08d10-a02c-48fd-8d06-ea6e8d4d9a47.png" },
+    hero: { image: "/images/anh-hero.png" },
     title: "THƯ NGỞ",
     subtitle: "Thông điệp nhà sáng lập",
     greeting: "Kính gửi: Quý khách hàng, đối tác và bạn bè,",
