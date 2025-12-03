@@ -1,11 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import dynamic from 'next/dynamic'
-import 'react-quill/dist/quill.snow.css'
-
-// Dynamically import ReactQuill to avoid SSR issues
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
+import { useEditor, EditorContent } from '@tiptap/react'
+import StarterKit from '@tiptap/starter-kit'
+import Underline from '@tiptap/extension-underline'
+import TextAlign from '@tiptap/extension-text-align'
+import Link from '@tiptap/extension-link'
+import { useEffect } from 'react'
 
 interface RichTextEditorProps {
   value: string
@@ -14,106 +14,208 @@ interface RichTextEditorProps {
 }
 
 export function RichTextEditor({ value, onChange, placeholder }: RichTextEditorProps) {
-  const [mounted, setMounted] = useState(false)
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Underline,
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+      }),
+      Link.configure({
+        openOnClick: false,
+      }),
+    ],
+    content: value,
+    onUpdate: ({ editor }) => {
+      onChange(editor.getHTML())
+    },
+    editorProps: {
+      attributes: {
+        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-xl focus:outline-none min-h-[200px] max-w-none px-4 py-3',
+      },
+    },
+  })
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    if (editor && value !== editor.getHTML()) {
+      editor.commands.setContent(value)
+    }
+  }, [value, editor])
 
-  if (!mounted) {
-    return (
-      <div className="border-2 border-gray-300 rounded-lg px-4 py-3 min-h-[200px] bg-gray-50 animate-pulse">
-        <p className="text-gray-400">Đang tải editor...</p>
-      </div>
-    )
+  if (!editor) {
+    return null
   }
-
-  const modules = {
-    toolbar: [
-      [{ 'header': [1, 2, 3, false] }],
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      [{ 'align': [] }],
-      ['link'],
-      ['clean']
-    ],
-  }
-
-  const formats = [
-    'header',
-    'bold', 'italic', 'underline', 'strike',
-    'list', 'bullet',
-    'align',
-    'link'
-  ]
 
   return (
-    <div className="rich-text-editor-wrapper">
-      <ReactQuill
-        theme="snow"
-        value={value}
-        onChange={onChange}
-        modules={modules}
-        formats={formats}
-        placeholder={placeholder || 'Nhập nội dung...'}
-        className="bg-white rounded-lg"
+    <div className="border-2 border-gray-300 rounded-lg overflow-hidden bg-white">
+      <div className="bg-gray-50 border-b border-gray-300 p-2 flex flex-wrap gap-1">
+        <button
+          type="button"
+          onClick={() => editor.chain().focus().toggleBold().run()}
+          className={`px-3 py-1.5 rounded hover:bg-gray-200 transition-colors font-bold ${
+            editor.isActive('bold') ? 'bg-green-100 text-green-800' : 'bg-white'
+          }`}
+          title="In đậm (Ctrl+B)"
+        >
+          B
+        </button>
+        <button
+          type="button"
+          onClick={() => editor.chain().focus().toggleItalic().run()}
+          className={`px-3 py-1.5 rounded hover:bg-gray-200 transition-colors italic ${
+            editor.isActive('italic') ? 'bg-green-100 text-green-800' : 'bg-white'
+          }`}
+          title="In nghiêng (Ctrl+I)"
+        >
+          I
+        </button>
+        <button
+          type="button"
+          onClick={() => editor.chain().focus().toggleUnderline().run()}
+          className={`px-3 py-1.5 rounded hover:bg-gray-200 transition-colors underline ${
+            editor.isActive('underline') ? 'bg-green-100 text-green-800' : 'bg-white'
+          }`}
+          title="Gạch chân (Ctrl+U)"
+        >
+          U
+        </button>
+        <button
+          type="button"
+          onClick={() => editor.chain().focus().toggleStrike().run()}
+          className={`px-3 py-1.5 rounded hover:bg-gray-200 transition-colors line-through ${
+            editor.isActive('strike') ? 'bg-green-100 text-green-800' : 'bg-white'
+          }`}
+          title="Gạch ngang"
+        >
+          S
+        </button>
+        <div className="w-px bg-gray-300 mx-1"></div>
+        <button
+          type="button"
+          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+          className={`px-3 py-1.5 rounded hover:bg-gray-200 transition-colors font-bold ${
+            editor.isActive('heading', { level: 2 }) ? 'bg-green-100 text-green-800' : 'bg-white'
+          }`}
+          title="Tiêu đề 2"
+        >
+          H2
+        </button>
+        <button
+          type="button"
+          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+          className={`px-3 py-1.5 rounded hover:bg-gray-200 transition-colors font-bold ${
+            editor.isActive('heading', { level: 3 }) ? 'bg-green-100 text-green-800' : 'bg-white'
+          }`}
+          title="Tiêu đề 3"
+        >
+          H3
+        </button>
+        <div className="w-px bg-gray-300 mx-1"></div>
+        <button
+          type="button"
+          onClick={() => editor.chain().focus().toggleBulletList().run()}
+          className={`px-3 py-1.5 rounded hover:bg-gray-200 transition-colors ${
+            editor.isActive('bulletList') ? 'bg-green-100 text-green-800' : 'bg-white'
+          }`}
+          title="Danh sách"
+        >
+          • List
+        </button>
+        <button
+          type="button"
+          onClick={() => editor.chain().focus().toggleOrderedList().run()}
+          className={`px-3 py-1.5 rounded hover:bg-gray-200 transition-colors ${
+            editor.isActive('orderedList') ? 'bg-green-100 text-green-800' : 'bg-white'
+          }`}
+          title="Danh sách số"
+        >
+          1. List
+        </button>
+        <div className="w-px bg-gray-300 mx-1"></div>
+        <button
+          type="button"
+          onClick={() => editor.chain().focus().setTextAlign('left').run()}
+          className={`px-3 py-1.5 rounded hover:bg-gray-200 transition-colors ${
+            editor.isActive({ textAlign: 'left' }) ? 'bg-green-100 text-green-800' : 'bg-white'
+          }`}
+          title="Căn trái"
+        >
+          ←
+        </button>
+        <button
+          type="button"
+          onClick={() => editor.chain().focus().setTextAlign('center').run()}
+          className={`px-3 py-1.5 rounded hover:bg-gray-200 transition-colors ${
+            editor.isActive({ textAlign: 'center' }) ? 'bg-green-100 text-green-800' : 'bg-white'
+          }`}
+          title="Căn giữa"
+        >
+          ↔
+        </button>
+        <button
+          type="button"
+          onClick={() => editor.chain().focus().setTextAlign('right').run()}
+          className={`px-3 py-1.5 rounded hover:bg-gray-200 transition-colors ${
+            editor.isActive({ textAlign: 'right' }) ? 'bg-green-100 text-green-800' : 'bg-white'
+          }`}
+          title="Căn phải"
+        >
+          →
+        </button>
+      </div>
+      <EditorContent 
+        editor={editor} 
+        placeholder={placeholder}
+        className="min-h-[200px]"
       />
       <style jsx global>{`
-        .rich-text-editor-wrapper .quill {
-          border-radius: 0.5rem;
-          border: 2px solid #d1d5db;
-        }
-        .rich-text-editor-wrapper .ql-container {
-          border-bottom-left-radius: 0.5rem;
-          border-bottom-right-radius: 0.5rem;
-          font-size: 15px;
-          font-family: system-ui, -apple-system, sans-serif;
-          min-height: 200px;
-        }
-        .rich-text-editor-wrapper .ql-editor {
+        .ProseMirror {
           min-height: 200px;
           font-size: 15px;
           line-height: 1.6;
+          font-family: system-ui, -apple-system, sans-serif;
         }
-        .rich-text-editor-wrapper .ql-toolbar {
-          border-top-left-radius: 0.5rem;
-          border-top-right-radius: 0.5rem;
-          background: #f9fafb;
-          border-bottom: 1px solid #e5e7eb;
+        .ProseMirror:focus {
+          outline: none;
         }
-        .rich-text-editor-wrapper .ql-editor.ql-blank::before {
+        .ProseMirror p.is-editor-empty:first-child::before {
+          content: attr(data-placeholder);
+          float: left;
           color: #9ca3af;
-          font-style: normal;
+          pointer-events: none;
+          height: 0;
         }
-        .rich-text-editor-wrapper .ql-snow .ql-stroke {
-          stroke: #4b5563;
+        .ProseMirror strong {
+          font-weight: 700;
         }
-        .rich-text-editor-wrapper .ql-snow .ql-fill {
-          fill: #4b5563;
+        .ProseMirror em {
+          font-style: italic;
         }
-        .rich-text-editor-wrapper .ql-snow .ql-picker-label {
-          color: #4b5563;
+        .ProseMirror u {
+          text-decoration: underline;
         }
-        .rich-text-editor-wrapper .ql-toolbar button:hover,
-        .rich-text-editor-wrapper .ql-toolbar button:focus,
-        .rich-text-editor-wrapper .ql-toolbar button.ql-active,
-        .rich-text-editor-wrapper .ql-toolbar .ql-picker-label:hover,
-        .rich-text-editor-wrapper .ql-toolbar .ql-picker-label.ql-active {
-          color: #2d5016;
+        .ProseMirror h2 {
+          font-size: 1.5em;
+          font-weight: 700;
+          margin-top: 1em;
+          margin-bottom: 0.5em;
         }
-        .rich-text-editor-wrapper .ql-toolbar button:hover .ql-stroke,
-        .rich-text-editor-wrapper .ql-toolbar button:focus .ql-stroke,
-        .rich-text-editor-wrapper .ql-toolbar button.ql-active .ql-stroke,
-        .rich-text-editor-wrapper .ql-toolbar .ql-picker-label:hover .ql-stroke,
-        .rich-text-editor-wrapper .ql-toolbar .ql-picker-label.ql-active .ql-stroke {
-          stroke: #2d5016;
+        .ProseMirror h3 {
+          font-size: 1.25em;
+          font-weight: 700;
+          margin-top: 0.8em;
+          margin-bottom: 0.4em;
         }
-        .rich-text-editor-wrapper .ql-toolbar button:hover .ql-fill,
-        .rich-text-editor-wrapper .ql-toolbar button:focus .ql-fill,
-        .rich-text-editor-wrapper .ql-toolbar button.ql-active .ql-fill,
-        .rich-text-editor-wrapper .ql-toolbar .ql-picker-label:hover .ql-fill,
-        .rich-text-editor-wrapper .ql-toolbar .ql-picker-label.ql-active .ql-fill {
-          fill: #2d5016;
+        .ProseMirror ul,
+        .ProseMirror ol {
+          padding-left: 2em;
+          margin: 1em 0;
+        }
+        .ProseMirror li {
+          margin: 0.5em 0;
+        }
+        .ProseMirror p {
+          margin: 0.75em 0;
         }
       `}</style>
     </div>
