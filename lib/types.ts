@@ -63,6 +63,15 @@ export interface FAQ {
 }
 
 // News Types
+export interface ContentBlock {
+  id: string
+  type: 'text' | 'image'
+  content?: string // For text blocks
+  imageUrl?: string // For image blocks
+  imageCaption?: string // Caption/description for images
+  imageAlt?: string // Alt text for accessibility
+}
+
 export interface NewsArticle {
   id: number
   title: string
@@ -71,7 +80,8 @@ export interface NewsArticle {
   image: string
   category: string
   featured: boolean
-  content?: string
+  content?: string // Legacy - kept for backward compatibility
+  contentBlocks?: ContentBlock[] // New flexible content structure
   layout?: 'standard' | 'large-image' | 'split'
   author?: string | null
 }

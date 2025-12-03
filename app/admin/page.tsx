@@ -1731,6 +1731,7 @@ function NewsEditor({
     category: '',
     featured: false,
     content: '',
+    contentBlocks: [] as Array<{ id: string; type: 'text' | 'image'; content?: string; imageUrl?: string; imageCaption?: string; imageAlt?: string }>,
     layout: 'standard' as 'standard' | 'large-image' | 'split',
     author: '',
   })
@@ -1756,6 +1757,7 @@ function NewsEditor({
       category: formData.category,
       featured: formData.featured,
       content: formData.content,
+      contentBlocks: formData.contentBlocks.length > 0 ? formData.contentBlocks : undefined,
       layout: formData.layout,
       author: formData.author || null,
     }
@@ -1771,6 +1773,7 @@ function NewsEditor({
       category: '',
       featured: false,
       content: '',
+      contentBlocks: [],
       layout: 'standard',
       author: '',
     })
@@ -1942,21 +1945,194 @@ function NewsEditor({
           </div>
 
           <div>
-            <label htmlFor="news-content" className="block text-sm font-semibold text-gray-700 mb-2">📝 Nội dung (HTML)</label>
-            <Textarea
-              id="news-content"
-              value={formData.content}
-              onChange={(e) => {
-                setFormData({ ...formData, content: e.target.value })
-                // Auto-resize textarea
-                e.target.style.height = 'auto'
-                e.target.style.height = e.target.scrollHeight + 'px'
-              }}
-              placeholder="Nội dung bài viết (có thể dùng HTML)"
-              rows={8}
-              className="w-full border-2 border-indigo-200 rounded-lg px-4 py-3 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all font-mono text-sm resize-none overflow-hidden"
-              style={{ minHeight: '200px' }}
-            />
+            <label htmlFor="news-content" className="block text-sm font-semibold text-gray-700 mb-2">📝 Nội dung</label>
+            
+            {/* Content Blocks Editor */}
+            <div className="space-y-4 mb-4">
+              <div className="bg-white border-2 border-indigo-200 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="font-semibold text-gray-800">Nội dung bài viết (Blocks)</h4>
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={() => {
+                        setFormData({
+                          ...formData,
+                          contentBlocks: [
+                            ...formData.contentBlocks,
+                            { id: `text-${Date.now()}`, type: 'text', content: '' }
+                          ]
+                        })
+                      }}
+                      className="bg-blue-600 hover:bg-blue-700 text-white"
+                    >
+                      ➕ Đoạn văn
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={() => {
+                        setFormData({
+                          ...formData,
+                          contentBlocks: [
+                            ...formData.contentBlocks,
+                            { id: `image-${Date.now()}`, type: 'image', imageUrl: '', imageCaption: '', imageAlt: '' }
+                          ]
+                        })
+                      }}
+                      className="bg-green-600 hover:bg-green-700 text-white"
+                    >
+                      🖼️ Ảnh
+                    </Button>
+                  </div>
+                </div>
+
+                {formData.contentBlocks.length === 0 && (
+                  <p className="text-gray-500 text-sm text-center py-8">
+                    Chưa có nội dung. Nhấn "➕ Đoạn văn" hoặc "🖼️ Ảnh" để thêm.
+                  </p>
+                )}
+
+                {formData.contentBlocks.map((block, index) => (
+                  <div key={block.id} className="border-2 border-gray-200 rounded-lg p-4 mb-3 bg-gray-50">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="font-semibold text-sm text-gray-700">
+                        {block.type === 'text' ? '📝 Đoạn văn' : '🖼️ Ảnh'} #{index + 1}
+                      </span>
+                      <div className="flex gap-2">
+                        {index > 0 && (
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              const blocks = [...formData.contentBlocks]
+                              const temp = blocks[index]
+                              blocks[index] = blocks[index - 1]
+                              blocks[index - 1] = temp
+                              setFormData({ ...formData, contentBlocks: blocks })
+                            }}
+                          >
+                            ⬆️
+                          </Button>
+                        )}
+                        {index < formData.contentBlocks.length - 1 && (
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              const blocks = [...formData.contentBlocks]
+                              const temp = blocks[index]
+                              blocks[index] = blocks[index + 1]
+                              blocks[index + 1] = temp
+                              setFormData({ ...formData, contentBlocks: blocks })
+                            }}
+                          >
+                            ⬇️
+                          </Button>
+                        )}
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => {
+                            setFormData({
+                              ...formData,
+                              contentBlocks: formData.contentBlocks.filter((_, i) => i !== index)
+                            })
+                          }}
+                        >
+                          🗑️
+                        </Button>
+                      </div>
+                    </div>
+
+                    {block.type === 'text' && (
+                      <Textarea
+                        value={block.content || ''}
+                        onChange={(e) => {
+                          const blocks = [...formData.contentBlocks]
+                          blocks[index] = { ...blocks[index], content: e.target.value }
+                          setFormData({ ...formData, contentBlocks: blocks })
+                        }}
+                        placeholder="Nhập nội dung đoạn văn (có thể dùng HTML)"
+                        rows={6}
+                        className="w-full border-2 border-gray-300 rounded-lg px-4 py-3 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 font-mono text-sm"
+                      />
+                    )}
+
+                    {block.type === 'image' && (
+                      <div className="space-y-3">
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-600 mb-1">URL Ảnh</label>
+                          <ImageUploader
+                            value={block.imageUrl || ''}
+                            onChange={(url) => {
+                              const blocks = [...formData.contentBlocks]
+                              blocks[index] = { ...blocks[index], imageUrl: url }
+                              setFormData({ ...formData, contentBlocks: blocks })
+                            }}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-600 mb-1">Mô tả ảnh (Caption)</label>
+                          <Input
+                            value={block.imageCaption || ''}
+                            onChange={(e) => {
+                              const blocks = [...formData.contentBlocks]
+                              blocks[index] = { ...blocks[index], imageCaption: e.target.value }
+                              setFormData({ ...formData, contentBlocks: blocks })
+                            }}
+                            placeholder="VD: Người nông dân đang thu hoạch lúa tại đồng ruộng"
+                            className="w-full border-2 border-gray-300 rounded-lg px-3 py-2"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-600 mb-1">Alt text (cho SEO)</label>
+                          <Input
+                            value={block.imageAlt || ''}
+                            onChange={(e) => {
+                              const blocks = [...formData.contentBlocks]
+                              blocks[index] = { ...blocks[index], imageAlt: e.target.value }
+                              setFormData({ ...formData, contentBlocks: blocks })
+                            }}
+                            placeholder="Mô tả ngắn gọn cho ảnh"
+                            className="w-full border-2 border-gray-300 rounded-lg px-3 py-2"
+                          />
+                        </div>
+                        {block.imageUrl && (
+                          <div className="mt-2">
+                            <img src={block.imageUrl} alt="Preview" className="w-full h-48 object-cover rounded-lg" />
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Legacy content field (for backward compatibility) */}
+            <details className="bg-gray-100 border-2 border-gray-300 rounded-lg p-3">
+              <summary className="cursor-pointer font-semibold text-sm text-gray-700">
+                📄 Nội dung cũ (HTML) - Chỉ dùng khi cần
+              </summary>
+              <Textarea
+                id="news-content"
+                value={formData.content}
+                onChange={(e) => {
+                  setFormData({ ...formData, content: e.target.value })
+                  e.target.style.height = 'auto'
+                  e.target.style.height = e.target.scrollHeight + 'px'
+                }}
+                placeholder="Nội dung bài viết (HTML) - Nếu dùng Blocks thì không cần điền phần này"
+                rows={6}
+                className="w-full mt-3 border-2 border-gray-300 rounded-lg px-4 py-3 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 font-mono text-sm resize-none overflow-hidden"
+                style={{ minHeight: '150px' }}
+              />
+            </details>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3">
@@ -2093,13 +2269,177 @@ function NewsEditor({
                   <option value="large-image">Ảnh lớn</option>
                   <option value="split">Hai cột</option>
                 </select>
-                <Textarea 
-                  value={article.content ?? ''} 
-                  onChange={(e) => updateArticle(article.id, { content: e.target.value })} 
-                  rows={6} 
-                  placeholder="Nội dung HTML" 
-                  className="border-2 border-indigo-200 focus:border-indigo-500 font-mono text-sm"
-                />
+                
+                {/* Content Blocks Editor for existing article */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-semibold text-gray-800 text-sm">Nội dung (Blocks)</h4>
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        size="sm"
+                        onClick={() => {
+                          const blocks = article.contentBlocks || []
+                          updateArticle(article.id, {
+                            contentBlocks: [
+                              ...blocks,
+                              { id: `text-${Date.now()}`, type: 'text', content: '' }
+                            ]
+                          })
+                        }}
+                        className="bg-blue-600 hover:bg-blue-700 text-white text-xs"
+                      >
+                        ➕ Đoạn văn
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        onClick={() => {
+                          const blocks = article.contentBlocks || []
+                          updateArticle(article.id, {
+                            contentBlocks: [
+                              ...blocks,
+                              { id: `image-${Date.now()}`, type: 'image', imageUrl: '', imageCaption: '', imageAlt: '' }
+                            ]
+                          })
+                        }}
+                        className="bg-green-600 hover:bg-green-700 text-white text-xs"
+                      >
+                        🖼️ Ảnh
+                      </Button>
+                    </div>
+                  </div>
+
+                  {(!article.contentBlocks || article.contentBlocks.length === 0) && (
+                    <p className="text-gray-500 text-xs text-center py-4 bg-gray-50 rounded">
+                      Chưa có content blocks. Nhấn nút trên để thêm.
+                    </p>
+                  )}
+
+                  {(article.contentBlocks || []).map((block, index) => (
+                    <div key={block.id} className="border-2 border-gray-200 rounded-lg p-3 bg-gray-50">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-semibold text-xs text-gray-700">
+                          {block.type === 'text' ? '📝' : '🖼️'} #{index + 1}
+                        </span>
+                        <div className="flex gap-1">
+                          {index > 0 && (
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              onClick={() => {
+                                const blocks = [...(article.contentBlocks || [])]
+                                const temp = blocks[index]
+                                blocks[index] = blocks[index - 1]
+                                blocks[index - 1] = temp
+                                updateArticle(article.id, { contentBlocks: blocks })
+                              }}
+                              className="text-xs px-2 py-1"
+                            >
+                              ⬆️
+                            </Button>
+                          )}
+                          {index < (article.contentBlocks || []).length - 1 && (
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              onClick={() => {
+                                const blocks = [...(article.contentBlocks || [])]
+                                const temp = blocks[index]
+                                blocks[index] = blocks[index + 1]
+                                blocks[index + 1] = temp
+                                updateArticle(article.id, { contentBlocks: blocks })
+                              }}
+                              className="text-xs px-2 py-1"
+                            >
+                              ⬇️
+                            </Button>
+                          )}
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => {
+                              updateArticle(article.id, {
+                                contentBlocks: (article.contentBlocks || []).filter((_, i) => i !== index)
+                              })
+                            }}
+                            className="text-xs px-2 py-1"
+                          >
+                            🗑️
+                          </Button>
+                        </div>
+                      </div>
+
+                      {block.type === 'text' && (
+                        <Textarea
+                          value={block.content || ''}
+                          onChange={(e) => {
+                            const blocks = [...(article.contentBlocks || [])]
+                            blocks[index] = { ...blocks[index], content: e.target.value }
+                            updateArticle(article.id, { contentBlocks: blocks })
+                          }}
+                          placeholder="Nội dung đoạn văn (HTML)"
+                          rows={4}
+                          className="w-full border-2 border-gray-300 rounded px-3 py-2 text-sm font-mono"
+                        />
+                      )}
+
+                      {block.type === 'image' && (
+                        <div className="space-y-2">
+                          <ImageUploader
+                            value={block.imageUrl || ''}
+                            onChange={(url) => {
+                              const blocks = [...(article.contentBlocks || [])]
+                              blocks[index] = { ...blocks[index], imageUrl: url }
+                              updateArticle(article.id, { contentBlocks: blocks })
+                            }}
+                          />
+                          <Input
+                            value={block.imageCaption || ''}
+                            onChange={(e) => {
+                              const blocks = [...(article.contentBlocks || [])]
+                              blocks[index] = { ...blocks[index], imageCaption: e.target.value }
+                              updateArticle(article.id, { contentBlocks: blocks })
+                            }}
+                            placeholder="Caption (mô tả ảnh)"
+                            className="text-sm"
+                          />
+                          <Input
+                            value={block.imageAlt || ''}
+                            onChange={(e) => {
+                              const blocks = [...(article.contentBlocks || [])]
+                              blocks[index] = { ...blocks[index], imageAlt: e.target.value }
+                              updateArticle(article.id, { contentBlocks: blocks })
+                            }}
+                            placeholder="Alt text"
+                            className="text-sm"
+                          />
+                          {block.imageUrl && (
+                            <img src={block.imageUrl} alt="Preview" className="w-full h-32 object-cover rounded" />
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Legacy content field */}
+                <details className="bg-gray-100 border-2 border-gray-300 rounded-lg p-2">
+                  <summary className="cursor-pointer font-semibold text-xs text-gray-700">
+                    📄 Nội dung cũ (HTML)
+                  </summary>
+                  <Textarea 
+                    value={article.content ?? ''} 
+                    onChange={(e) => updateArticle(article.id, { content: e.target.value })} 
+                    rows={6} 
+                    placeholder="Nội dung HTML (chỉ dùng khi không dùng Blocks)" 
+                    className="mt-2 border-2 border-indigo-200 focus:border-indigo-500 font-mono text-sm"
+                  />
+                </details>
+                
                 <div className="flex gap-2">
                   <Button 
                     onClick={onSave} 

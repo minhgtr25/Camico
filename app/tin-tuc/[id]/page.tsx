@@ -238,7 +238,38 @@ export default function ArticlePage() {
           )}
 
           <div className="prose prose-lg max-w-none">
-            <article dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
+            {article.contentBlocks && article.contentBlocks.length > 0 ? (
+              // New content blocks structure
+              <div className="space-y-6">
+                {article.contentBlocks.map((block) => {
+                  if (block.type === 'text' && block.content) {
+                    return (
+                      <div key={block.id} dangerouslySetInnerHTML={{ __html: sanitizeHtmlFallback(block.content) }} />
+                    )
+                  }
+                  if (block.type === 'image' && block.imageUrl) {
+                    return (
+                      <figure key={block.id} className="my-8">
+                        <img 
+                          src={block.imageUrl} 
+                          alt={block.imageAlt || block.imageCaption || 'Article image'} 
+                          className="w-full rounded-lg shadow-lg"
+                        />
+                        {block.imageCaption && (
+                          <figcaption className="mt-3 text-center text-sm text-gray-600 italic">
+                            {block.imageCaption}
+                          </figcaption>
+                        )}
+                      </figure>
+                    )
+                  }
+                  return null
+                })}
+              </div>
+            ) : (
+              // Fallback to legacy content
+              <article dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
+            )}
           </div>
 
           <div className="mt-12 border-t pt-6 flex items-center justify-between">
