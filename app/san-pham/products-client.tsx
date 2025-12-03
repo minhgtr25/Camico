@@ -94,9 +94,11 @@ export default function ProductsClient({ content }: ProductsClientProps) {
                         <p className="text-sm text-gray-600 mb-4 line-clamp-3">
                           {product.description}
                         </p>
-                        <div className="flex items-center justify-between">
-                          <span className="text-lg font-bold text-[#2d5016]">{product.weight}</span>
-                          <span className="text-[#2d5016] group-hover:translate-x-1 transition-transform text-xl">→</span>
+                        <div className="flex items-center justify-end">
+                          <span className="text-[#2d5016] font-semibold group-hover:translate-x-1 transition-all duration-300 flex items-center gap-2">
+                            Đọc thêm
+                            <span className="text-xl">→</span>
+                          </span>
                         </div>
                       </div>
                     </Link>
