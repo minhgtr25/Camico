@@ -248,7 +248,10 @@ export default function ArticlePage() {
                         {block.title && (
                           <h3 className="text-xl font-bold text-gray-900 mt-8 mb-4">{block.title}</h3>
                         )}
-                        <div dangerouslySetInnerHTML={{ __html: sanitizeHtmlFallback(block.content) }} />
+                        <div 
+                          className="text-base leading-relaxed text-gray-800"
+                          dangerouslySetInnerHTML={{ __html: sanitizeHtmlFallback(block.content) }} 
+                        />
                       </div>
                     )
                   }

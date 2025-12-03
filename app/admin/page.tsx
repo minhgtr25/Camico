@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { ImageUploader } from '@/components/image-uploader'
+import { RichTextEditor } from '@/components/rich-text-editor'
 import { useToast } from '@/hooks/use-toast'
 
 type TabType = 'hero' | 'contact' | 'products' | 'news' | 'faqs' | 'pages' | 'about' | 'testimonials' | 'gallery' | 'guide' | 'contactPage' | 'productsPage' | 'aboutPartners' | 'aboutMission' | 'aboutMessage' | 'favicon'
@@ -2065,17 +2066,21 @@ function NewsEditor({
                     </div>
 
                     {block.type === 'text' && (
-                      <Textarea
-                        value={block.content || ''}
-                        onChange={(e) => {
-                          const blocks = [...formData.contentBlocks]
-                          blocks[index] = { ...blocks[index], content: e.target.value }
-                          setFormData({ ...formData, contentBlocks: blocks })
-                        }}
-                        placeholder="Nhập nội dung đoạn văn (có thể dùng HTML)"
-                        rows={6}
-                        className="w-full border-2 border-gray-300 rounded-lg px-4 py-3 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 font-mono text-sm"
-                      />
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2 text-xs text-gray-600 bg-blue-50 px-3 py-2 rounded-lg">
+                          <span>💡</span>
+                          <span>Bôi đen text và nhấn nút <strong>B</strong> để in đậm, <em>I</em> để in nghiêng</span>
+                        </div>
+                        <RichTextEditor
+                          value={block.content || ''}
+                          onChange={(value) => {
+                            const blocks = [...formData.contentBlocks]
+                            blocks[index] = { ...blocks[index], content: value }
+                            setFormData({ ...formData, contentBlocks: blocks })
+                          }}
+                          placeholder="Nhập nội dung đoạn văn... (Bôi đen text để format)"
+                        />
+                      </div>
                     )}
 
                     {block.type === 'image' && (
@@ -2388,18 +2393,37 @@ function NewsEditor({
                         </div>
                       </div>
 
-                      {block.type === 'text' && (
-                        <Textarea
-                          value={block.content || ''}
+                      {/* Block Title (optional for all blocks) */}
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-600 mb-1">Tiêu đề block (tuỳ chọn)</label>
+                        <Input
+                          value={block.title || ''}
                           onChange={(e) => {
                             const blocks = [...(article.contentBlocks || [])]
-                            blocks[index] = { ...blocks[index], content: e.target.value }
+                            blocks[index] = { ...blocks[index], title: e.target.value }
                             updateArticle(article.id, { contentBlocks: blocks })
                           }}
-                          placeholder="Nội dung đoạn văn (HTML)"
-                          rows={4}
-                          className="w-full border-2 border-gray-300 rounded px-3 py-2 text-sm font-mono"
+                          placeholder="VD: Giới thiệu, Phân tích, Kết luận..."
+                          className="w-full border-2 border-gray-300 rounded-lg px-3 py-2 text-sm"
                         />
+                      </div>
+
+                      {block.type === 'text' && (
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2 text-xs text-gray-600 bg-blue-50 px-2 py-1.5 rounded">
+                            <span>💡</span>
+                            <span>Bôi đen để format</span>
+                          </div>
+                          <RichTextEditor
+                            value={block.content || ''}
+                            onChange={(value) => {
+                              const blocks = [...(article.contentBlocks || [])]
+                              blocks[index] = { ...blocks[index], content: value }
+                              updateArticle(article.id, { contentBlocks: blocks })
+                            }}
+                            placeholder="Nhập nội dung..."
+                          />
+                        </div>
                       )}
 
                       {block.type === 'image' && (
