@@ -1,12 +1,30 @@
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { fetchAdminContentFromServer } from "@/lib/admin-content"
+import { defaultAdminContent } from "@/lib/admin-content"
 import { PartnersClient } from "./partners-client"
+import { kv } from '@vercel/kv'
 
 export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
+async function getAdminContent() {
+  // Chỉ gọi KV khi đang runtime, không phải build time
+  if (process.env.NODE_ENV === 'production' && process.env.VERCEL_ENV === undefined) {
+    // Build time - return default
+    return defaultAdminContent
+  }
+  
+  try {
+    const content = await kv.get('admin-content')
+    return content || defaultAdminContent
+  } catch (error) {
+    console.error('Error fetching admin content:', error)
+    return defaultAdminContent
+  }
+}
 
 export default async function DoiTacPage() {
-  const adminContent = await fetchAdminContentFromServer()
+  const adminContent = await getAdminContent()
   const partnersData = adminContent?.pages?.aboutPartners || {
     hero: {
       title: "Đối tác chiến lược",

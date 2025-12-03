@@ -301,10 +301,10 @@ export default function ProductDetailPage({ params }: { readonly params: Promise
 
             <div className="space-y-3">
               {productFAQ.map((faq) => (
-                <div key={faq.id} className="bg-[#d9a5a5] rounded-lg overflow-hidden transition-all duration-300">
+                <div key={faq.id} className="bg-[#2d5016] rounded-lg overflow-hidden transition-all duration-300">
                   <button
                     onClick={() => setExpandedFAQ(expandedFAQ === faq.id ? null : faq.id)}
-                    className="w-full px-6 py-4 text-left font-semibold text-gray-800 hover:bg-[#cf9898] transition-colors flex justify-between items-center"
+                    className="w-full px-6 py-4 text-left font-semibold text-white hover:bg-[#3d6826] transition-colors flex justify-between items-center"
                   >
                     <span>{faq.question}</span>
                     <span className="text-xl transition-transform duration-300">
@@ -313,11 +313,11 @@ export default function ProductDetailPage({ params }: { readonly params: Promise
                   </button>
 
                   {expandedFAQ === faq.id && (
-                    <div className="px-6 py-4 bg-[#f5e8e1] text-gray-700 border-t border-[#cf9898] animate-in fade-in slide-in-from-top-2 duration-300">
+                    <div className="px-6 py-4 bg-[#f5f5dc] text-gray-700 border-t border-[#3d6826] animate-in fade-in slide-in-from-top-2 duration-300">
                       <p className="mb-6">{faq.answer}</p>
                       {/* Author Info Section */}
                       {faq.author && faq.title && (
-                        <div className="border-t border-[#d9a5a5] pt-4 text-center">
+                        <div className="border-t border-[#2d5016]/20 pt-4 text-center">
                           <p className="font-bold text-gray-800">{faq.author}</p>
                           <p className="text-sm text-gray-600 mt-1">({faq.title})</p>
                         </div>

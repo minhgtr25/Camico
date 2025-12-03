@@ -11,17 +11,12 @@ interface ProductsClientProps {
 
 export default function ProductsClient({ content }: ProductsClientProps) {
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
-  const [activeWeight, setActiveWeight] = useState<string | null>(null)
 
-  // Filter products based on active filters
+  // Filter products based on active category
   const filteredProducts = content.productList.filter((product) => {
     if (activeCategory && product.category !== activeCategory) return false
-    if (activeWeight && product.weight !== activeWeight) return false
     return true
   })
-
-  // Get unique weights from products
-  const availableWeights = Array.from(new Set(content.productList.map(p => p.weight))).sort()
 
   return (
     <main className="flex-1">
@@ -55,36 +50,11 @@ export default function ProductsClient({ content }: ProductsClientProps) {
               </div>
             </div>
 
-            {/* Weight Filter */}
-            <div className="bg-white rounded-xl p-6 shadow-md border-2 border-[#2d5016]/10">
-              <h3 className="text-xl font-bold mb-4 text-[#2d5016]">Khối lượng</h3>
-              <div className="space-y-3">
-                {availableWeights.map((weight) => (
-                  <div key={weight} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={`weight-${weight}`}
-                      checked={activeWeight === weight}
-                      onCheckedChange={(checked) => {
-                        setActiveWeight(checked ? weight : null)
-                      }}
-                    />
-                    <label
-                      htmlFor={`weight-${weight}`}
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer text-gray-700"
-                    >
-                      {weight}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </div>
-
             {/* Clear Filters */}
-            {(activeCategory || activeWeight) && (
+            {activeCategory && (
               <button
                 onClick={() => {
                   setActiveCategory(null)
-                  setActiveWeight(null)
                 }}
                 className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:shadow-lg text-white py-3 px-4 rounded-lg transition-all duration-300 font-semibold"
               >
