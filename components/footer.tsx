@@ -79,14 +79,14 @@ export function Footer() {
                 <h4 className="font-bold text-base mb-3">MẠNG XÃ HỘI</h4>
                 <div className="flex gap-3">
                   <Link 
-                    href="#" 
+                    href="https://www.facebook.com/camicofarmer" 
                     className="w-10 h-10 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors"
                     aria-label="Facebook"
                   >
                     <Facebook className="w-5 h-5 text-[#2d5a3a]" />
                   </Link>
                   <Link 
-                    href="#" 
+                    href="https://www.tiktok.com/@camico0509?is_from_webapp=1&sender_device=pc" 
                     className="w-10 h-10 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors"
                     aria-label="TikTok"
                   >
