@@ -32,7 +32,7 @@ const productsData: Record<
     ],
     description:
       "Thức ăn cho heo giai đoạn 30-75kg giúp heo phát triển khung xương, cơ bắp và tăng trưởng nhanh, đông thời duy trì sức khoẻ ruột ổn định. Công thức định dưỡng của Camico được cân đối tối ưu giúp heo ăn ngon miệng, tăng nạc nhanh, giảm mỡ, mang lợi ích cao cho người chăn nuôi.",
-    image: "/feed-bag-pig-heo.jpg",
+    image: "/images/30-75kg",
   },
   "2": {
     id: 2,
@@ -47,7 +47,7 @@ const productsData: Record<
     ],
     description:
       "Thức ăn dành cho heo giai đoạn 75kg - xuất chuồng được thiết kế nhằm tối ưu uất trong cuối cùng, giúp heo đạt trong lượng mỡ muối trong thời gian ngắn nhất. Công thức giám đạm – cân đối nạc – yêu cầu năng lượng giúp heo ít ích thịt, sản chắc, da giá thành chân nuôi vừa.",
-    image: "/feed-bag-pig.jpg",
+    image: "/images/75kg-xuat-chuong",
   },
   "3": {
     id: 3,
@@ -62,7 +62,7 @@ const productsData: Record<
     ],
     description:
       "Thức ăn cho gà thả vườn từ 46 ngày tuổi - xuất chuồng được bổ sung enzyme tiêu hóa và khoáng chất tự nhiên, giúp gà phát triển có thịt săn chắc, da vàng đẹp và mờ. Công thức tối ưu giúp gà ít ích thịt sản chắc, tăng suất đề kháng thịt vượt trội.",
-    image: "/feed-bag-chicken.jpg",
+    image: "/images/ga-tha-vuon",
   },
 }
 
