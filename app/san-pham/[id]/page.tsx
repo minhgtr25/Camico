@@ -182,10 +182,19 @@ export default function ProductDetailPage({ params }: { readonly params: Promise
   const [productFAQ, setProductFAQ] = useState(faqDataByProduct[id] || [])
 
   useEffect(() => {
-    try {
-      const raw = globalThis?.localStorage?.getItem('adminContent')
-      if (raw) {
-        const admin = JSON.parse(raw)
+    async function loadProductData() {
+      try {
+        // Fetch from server API instead of localStorage
+        const response = await fetch('/api/admin/content', {
+          cache: 'no-store'
+        })
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch content')
+        }
+        
+        const admin = await response.json()
+        
         // Try to find product by id (admin products use string ids)
         const adminProduct = (admin.products || []).find((p: any) => p.id === id || String(p.id) === String(id))
         if (adminProduct) {
@@ -209,15 +218,17 @@ export default function ProductDetailPage({ params }: { readonly params: Promise
             setProductFAQ(adminP.faqs)
             return
           }
-          }
-          if (admin.faqs?.[id]?.length) {
-            setProductFAQ(admin.faqs[id])
-            return
-          }
+        }
+        if (admin.faqs?.[id]?.length) {
+          setProductFAQ(admin.faqs[id])
+          return
+        }
+      } catch (e) {
+        console.error('Failed to load adminContent from server', e)
       }
-    } catch (e) {
-      console.warn('Failed to load adminContent from localStorage', e)
     }
+    
+    loadProductData()
   }, [id])
 
   if (!product) {
