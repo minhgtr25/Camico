@@ -242,6 +242,8 @@ export const defaultAdminContent: AdminContent = {
     aboutMission: {
       hero: {
         image: '/images/anh-hero.png',
+        title: 'SỨ mệnh của chúng tôi',
+        subtitle: 'Xây dựng nông nghiệp bền vững cho Việt Nam',
       },
       backgroundImage: '/images/design-mode/00d08d10-a02c-48fd-8d06-ea6e8d4d9a47.png',
       companyName: 'CÔNG TY CỔ PHẦN CAMICO',
@@ -264,6 +266,8 @@ export const defaultAdminContent: AdminContent = {
     aboutMessage: {
       hero: {
         image: '/images/anh-hero.png',
+        title: 'Thông điệp nhà sáng lập',
+        subtitle: 'Từ biển xanh, chúng tôi nhìn thấy tương lai của nông nghiệp Việt',
       },
       backgroundImage: '/images/design-mode/00d08d10-a02c-48fd-8d06-ea6e8d4d9a47.png',
       title: 'THƯ NGỎ',

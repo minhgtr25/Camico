@@ -113,6 +113,17 @@ export default async function SuMenhPage() {
           className="object-cover"
           priority
         />
+        <div className="absolute inset-0 bg-black/40"></div>
+        <div className="relative z-10 h-full flex items-center justify-center">
+          <div className="text-center px-4">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              {missionData.hero.title || 'SỨ mệnh của chúng tôi'}
+            </h1>
+            <p className="text-white text-lg">
+              {missionData.hero.subtitle || 'Xây dựng nông nghiệp bền vững cho Việt Nam'}
+            </p>
+          </div>
+        </div>
       </section>
 
       <MissionClient missionData={missionData} />

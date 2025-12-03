@@ -36,6 +36,17 @@ export default async function ThongDiepPage() {
           className="object-cover"
           priority
         />
+        <div className="absolute inset-0 bg-black/40"></div>
+        <div className="relative z-10 h-full flex items-center justify-center">
+          <div className="text-center px-4">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              {messageData.hero.title || 'Thông điệp nhà sáng lập'}
+            </h1>
+            <p className="text-white text-lg">
+              {messageData.hero.subtitle || 'Từ biển xanh, chúng tôi nhìn thấy tương lai của nông nghiệp Việt'}
+            </p>
+          </div>
+        </div>
       </section>
 
       <MessageClient messageData={messageData} />

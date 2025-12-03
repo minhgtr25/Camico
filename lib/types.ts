@@ -140,6 +140,8 @@ export interface AboutPagePartners {
 export interface AboutPageMission {
   hero: {
     image: string
+    title?: string
+    subtitle?: string
   }
   backgroundImage?: string
   companyName: string
@@ -154,6 +156,8 @@ export interface AboutPageMission {
 export interface AboutPageMessage {
   hero: {
     image: string
+    title?: string
+    subtitle?: string
   }
   backgroundImage?: string
   title: string
