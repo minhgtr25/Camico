@@ -44,8 +44,15 @@ export async function POST(request: NextRequest) {
   try {
     const content = await request.json()
     
+    console.log('Saving admin content to KV:', {
+      hasContactPage: !!content?.pages?.contact,
+      contactCards: content?.pages?.contact?.contactCards
+    })
+    
     // Lưu vào Vercel KV
     await kv.set(KV_KEY, content)
+    
+    console.log('Successfully saved to KV')
     
     return NextResponse.json({ success: true, message: 'Content saved successfully' })
   } catch (error) {
