@@ -42,7 +42,7 @@ export function PartnersClient({ partnersData, partnerLogos }: Readonly<Partners
             {partners.map((partner) => (
               <div
                 key={`first-${partner.id}`}
-                className="flex-shrink-0 w-[280px] md:w-[320px] h-[180px] md:h-[200px] bg-[#2C5F2D] rounded-lg shadow-lg flex items-center justify-center p-8"
+                className="flex-shrink-0 w-[280px] md:w-[320px] h-[180px] md:h-[200px] bg-white rounded-lg shadow-lg flex items-center justify-center p-8"
               >
                 <Image
                   src={partner.logo || "/placeholder.svg"}
@@ -56,7 +56,7 @@ export function PartnersClient({ partnersData, partnerLogos }: Readonly<Partners
             {partners.map((partner) => (
               <div
                 key={`second-${partner.id}`}
-                className="flex-shrink-0 w-[280px] md:w-[320px] h-[180px] md:h-[200px] bg-[#2C5F2D] rounded-lg shadow-lg flex items-center justify-center p-8"
+                className="flex-shrink-0 w-[280px] md:w-[320px] h-[180px] md:h-[200px] bg-white rounded-lg shadow-lg flex items-center justify-center p-8"
               >
                 <Image
                   src={partner.logo || "/placeholder.svg"}
