@@ -81,7 +81,6 @@ export default function ProductsClient({ content }: ProductsClientProps) {
                     >
                       <div className="p-6 bg-gradient-to-br from-white to-[#f5f5dc]/20">
                         <div className="flex items-center justify-between mb-4">
-                          <span className="text-5xl group-hover:scale-110 transition-transform duration-300">{product.icon}</span>
                           {category && (
                             <span className="text-xs bg-gradient-to-r from-[#2d5016] to-[#3d6826] text-white px-3 py-1 rounded-full font-semibold shadow-md">
                               {category.name}
