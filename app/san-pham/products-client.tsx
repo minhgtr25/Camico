@@ -42,7 +42,6 @@ export default function ProductsClient({ content }: ProductsClientProps) {
                       htmlFor={`category-${category.id}`}
                       className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer flex items-center gap-2 text-gray-700"
                     >
-                      <span>{category.icon}</span>
                       <span>{category.name}</span>
                     </label>
                   </div>
